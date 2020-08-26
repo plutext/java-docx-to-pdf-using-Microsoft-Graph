@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+    
+  <parent>
+	<groupId>org.plutext</groupId>
+	<artifactId>java-docx-to-pdf-using-Microsoft-Graph-parent</artifactId>	
+	<version>${revision}</version>
+  </parent>
+  
+	<artifactId>without-graph-sdk-using-msal4j</artifactId>
+	<packaging>${packaging.type}</packaging>
+	<name>without-graph-sdk-using-msal4j</name>
+	
+	<description>
+		without-graph-sdk-using-msal4j
+	</description>
+
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.plutext</groupId>
+			<artifactId>graph-convert-config</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.microsoft.azure</groupId>
+			<artifactId>msal4j</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.scribejava</groupId>
+			<artifactId>scribejava-apis</artifactId>
+			<version>7.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.scribejava</groupId>
+			<artifactId>scribejava-httpclient-apache</artifactId>
+			<version>7.0.0</version>
+		</dependency>
+
+	</dependencies>
+
+    <build>
+        <plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

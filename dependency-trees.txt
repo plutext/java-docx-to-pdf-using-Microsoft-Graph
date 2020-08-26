@@ -1,0 +1,130 @@
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ java-docx-to-pdf-using-Microsoft-Graph-parent ---
+[INFO] org.plutext:java-docx-to-pdf-using-Microsoft-Graph-parent:pom:1.0.0-SNAPSHOT
+[INFO] +- commons-io:commons-io:jar:2.6:compile
+[INFO] \- ch.qos.logback:logback-classic:jar:1.2.3:compile
+[INFO]    +- ch.qos.logback:logback-core:jar:1.2.3:compile
+[INFO]    \- org.slf4j:slf4j-api:jar:1.7.25:compile
+[INFO] 
+
+[INFO] ------------------< org.plutext:graph-convert-config >------------------
+[INFO] Building graph-convert-config 1.0.0-SNAPSHOT                       [2/6]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ graph-convert-config ---
+[INFO] org.plutext:graph-convert-config:jar:1.0.0-SNAPSHOT
+[INFO] +- commons-io:commons-io:jar:2.6:compile
+[INFO] \- ch.qos.logback:logback-classic:jar:1.2.3:compile
+[INFO]    +- ch.qos.logback:logback-core:jar:1.2.3:compile
+[INFO]    \- org.slf4j:slf4j-api:jar:1.7.25:compile
+[INFO] 
+
+[INFO] -------------< org.plutext:without-graph-sdk-using-scribe >-------------
+[INFO] Building without-graph-sdk-using-scribe 1.0.0-SNAPSHOT             [3/6]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ without-graph-sdk-using-scribe ---
+[INFO] org.plutext:without-graph-sdk-using-scribe:jar:1.0.0-SNAPSHOT
+[INFO] +- org.plutext:graph-convert-config:jar:1.0.0-SNAPSHOT:compile
+[INFO] +- com.github.scribejava:scribejava-apis:jar:7.0.0:compile
+[INFO] |  +- com.github.scribejava:scribejava-core:jar:7.0.0:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-databind:jar:2.11.2:compile
+[INFO] |     +- com.fasterxml.jackson.core:jackson-annotations:jar:2.11.2:compile
+[INFO] |     \- com.fasterxml.jackson.core:jackson-core:jar:2.11.2:compile
+[INFO] +- commons-io:commons-io:jar:2.6:compile
+[INFO] \- ch.qos.logback:logback-classic:jar:1.2.3:compile
+[INFO]    +- ch.qos.logback:logback-core:jar:1.2.3:compile
+[INFO]    \- org.slf4j:slf4j-api:jar:1.7.25:compile
+[INFO] 
+
+[INFO] -------------< org.plutext:without-graph-sdk-using-msal4j >-------------
+[INFO] Building without-graph-sdk-using-msal4j 1.0.0-SNAPSHOT             [4/6]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ without-graph-sdk-using-msal4j ---
+[INFO] org.plutext:without-graph-sdk-using-msal4j:jar:1.0.0-SNAPSHOT
+[INFO] +- org.plutext:graph-convert-config:jar:1.0.0-SNAPSHOT:compile
+[INFO] +- com.microsoft.azure:msal4j:jar:1.6.2:compile
+[INFO] |  +- com.nimbusds:oauth2-oidc-sdk:jar:7.4:compile
+[INFO] |  |  +- com.github.stephenc.jcip:jcip-annotations:jar:1.0-1:compile
+[INFO] |  |  +- com.nimbusds:content-type:jar:2.0:compile
+[INFO] |  |  +- net.minidev:json-smart:jar:2.3:compile (version selected from constraint [1.3.1,2.3])
+[INFO] |  |  |  \- net.minidev:accessors-smart:jar:1.2:compile
+[INFO] |  |  |     \- org.ow2.asm:asm:jar:5.0.4:compile
+[INFO] |  |  +- com.nimbusds:lang-tag:jar:1.4.4:compile
+[INFO] |  |  +- com.nimbusds:nimbus-jose-jwt:jar:8.14.1:compile
+[INFO] |  |  \- com.sun.mail:javax.mail:jar:1.6.1:compile
+[INFO] |  |     \- javax.activation:activation:jar:1.1:compile
+[INFO] |  +- org.slf4j:slf4j-api:jar:1.7.28:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-databind:jar:2.10.1:compile
+[INFO] |     +- com.fasterxml.jackson.core:jackson-annotations:jar:2.10.1:compile
+[INFO] |     \- com.fasterxml.jackson.core:jackson-core:jar:2.10.1:compile
+[INFO] +- com.github.scribejava:scribejava-apis:jar:7.0.0:compile
+[INFO] |  \- com.github.scribejava:scribejava-core:jar:7.0.0:compile
+[INFO] +- com.github.scribejava:scribejava-httpclient-apache:jar:7.0.0:compile
+[INFO] |  +- org.apache.httpcomponents:httpclient:jar:4.5.12:compile
+[INFO] |  |  +- org.apache.httpcomponents:httpcore:jar:4.4.13:compile
+[INFO] |  |  +- commons-logging:commons-logging:jar:1.2:compile
+[INFO] |  |  \- commons-codec:commons-codec:jar:1.11:compile
+[INFO] |  \- org.apache.httpcomponents:httpasyncclient:jar:4.1.4:compile
+[INFO] |     \- org.apache.httpcomponents:httpcore-nio:jar:4.4.10:compile
+[INFO] +- commons-io:commons-io:jar:2.6:compile
+[INFO] \- ch.qos.logback:logback-classic:jar:1.2.3:compile
+[INFO]    \- ch.qos.logback:logback-core:jar:1.2.3:compile
+[INFO] 
+
+[INFO] ---------------< org.plutext:using-graph-sdk-core-only >----------------
+[INFO] Building using-graph-sdk 1.0.0-SNAPSHOT                            [5/6]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ using-graph-sdk-core-only ---
+[INFO] org.plutext:using-graph-sdk-core-only:jar:1.0.0-SNAPSHOT
+[INFO] +- org.plutext:graph-convert-config:jar:1.0.0-SNAPSHOT:compile
+[INFO] +- com.microsoft.graph:microsoft-graph:jar:1.9.0:compile
+[INFO] |  +- com.google.code.gson:gson:jar:2.8.2:compile
+[INFO] |  +- com.sun.jersey:jersey-server:jar:1.19.4:compile
+[INFO] |  |  \- com.sun.jersey:jersey-core:jar:1.19.4:compile
+[INFO] |  |     \- javax.ws.rs:jsr311-api:jar:1.1.1:compile
+[INFO] |  +- org.apache.commons:commons-math3:jar:3.6.1:compile
+[INFO] |  \- com.google.guava:guava:jar:20.0:runtime
+[INFO] +- com.microsoft.graph:microsoft-graph-core:jar:1.0.0:compile
+[INFO] |  +- com.googlecode.json-simple:json-simple:jar:1.1:compile
+[INFO] |  \- com.squareup.okhttp3:okhttp:jar:3.12.1:compile
+[INFO] |     \- com.squareup.okio:okio:jar:1.15.0:compile
+[INFO] +- com.microsoft.graph:microsoft-graph-auth:jar:0.2.0-SNAPSHOT:compile
+[INFO] |  \- org.apache.oltu.oauth2:org.apache.oltu.oauth2.client:jar:1.0.2:compile
+[INFO] |     \- org.apache.oltu.oauth2:org.apache.oltu.oauth2.common:jar:1.0.2:compile
+[INFO] |        +- org.json:json:jar:20140107:compile
+[INFO] |        \- commons-codec:commons-codec:jar:1.9:compile
+[INFO] +- commons-io:commons-io:jar:2.6:compile
+[INFO] \- ch.qos.logback:logback-classic:jar:1.2.3:compile
+[INFO]    +- ch.qos.logback:logback-core:jar:1.2.3:compile
+[INFO]    \- org.slf4j:slf4j-api:jar:1.7.25:compile
+[INFO] 
+
+[INFO] --------------------< org.plutext:using-graph-sdk >---------------------
+[INFO] Building using-graph-sdk 1.0.0-SNAPSHOT                            [6/6]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ using-graph-sdk ---
+[INFO] org.plutext:using-graph-sdk:jar:1.0.0-SNAPSHOT
+[INFO] +- org.plutext:graph-convert-config:jar:1.0.0-SNAPSHOT:compile
+[INFO] +- com.microsoft.graph:microsoft-graph:jar:1.9.0:compile
+[INFO] |  +- com.google.code.gson:gson:jar:2.8.2:compile
+[INFO] |  +- com.sun.jersey:jersey-server:jar:1.19.4:compile
+[INFO] |  |  \- com.sun.jersey:jersey-core:jar:1.19.4:compile
+[INFO] |  |     \- javax.ws.rs:jsr311-api:jar:1.1.1:compile
+[INFO] |  +- com.microsoft.graph:microsoft-graph-core:jar:1.0.0:compile
+[INFO] |  |  +- com.googlecode.json-simple:json-simple:jar:1.1:compile
+[INFO] |  |  \- com.squareup.okhttp3:okhttp:jar:3.12.1:compile
+[INFO] |  |     \- com.squareup.okio:okio:jar:1.15.0:compile
+[INFO] |  +- org.apache.commons:commons-math3:jar:3.6.1:compile
+[INFO] |  \- com.google.guava:guava:jar:20.0:runtime
+[INFO] +- com.microsoft.graph:microsoft-graph-auth:jar:0.2.0-SNAPSHOT:compile
+[INFO] |  \- org.apache.oltu.oauth2:org.apache.oltu.oauth2.client:jar:1.0.2:compile
+[INFO] |     \- org.apache.oltu.oauth2:org.apache.oltu.oauth2.common:jar:1.0.2:compile
+[INFO] |        +- org.json:json:jar:20140107:compile
+[INFO] |        \- commons-codec:commons-codec:jar:1.9:compile
+[INFO] +- commons-io:commons-io:jar:2.6:compile
+[INFO] \- ch.qos.logback:logback-classic:jar:1.2.3:compile
+[INFO]    +- ch.qos.logback:logback-core:jar:1.2.3:compile
+[INFO]    \- org.slf4j:slf4j-api:jar:1.7.25:compile

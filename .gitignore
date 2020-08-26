@@ -1,0 +1,11 @@
+.settings/
+bin/
+target/
+/dist/
+bin-testOutput/
+.directory
+.idea
+.project
+.classpath
+.flattened-pom.xml
+tmp/
