@@ -11,28 +11,34 @@ package org.plutext.msgraph.convert;
  * @author jharrop
  *
  */
-public interface AuthConfig  {
-	
-	
+public class AuthConfigImpl implements  AuthConfig {
+		
 	/**
 	 * Application (client) ID
 	 */
-	public String apiKey();
+	public String apiKey() {
+		return "d57a3b70-b8a7-47d5-98db-191b86bc01f5";
+	}
 
 	/**
 	 * Client secret
 	 */
-	public String apiSecret();
+	public String apiSecret() {
+		return "M2X-B7aS_pjg2x2Ze5-19SE30yMAR_.2bL";
+	}
 
 	/**
 	 * Directory (tenant) ID
 	 */
-	public String tenant();
+	public String tenant() {
+		return "7e1d462f-b880-4b8b-8578-60caf8f5abc0";
+	}
 
-	/**
-	 * Site ID
-	 */
-	public String site();
+	@Override
+	public String site() {
+		return "yoursite.sharepoint.com,uuid1,uuid2";
+	}
+
 
 }
 
