@@ -1,16 +1,22 @@
-package org.plutext.msgraph.convert;
+package org.plutext.msgraph.convert.graphsdk;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.plutext.msgraph.convert.AuthConfig;
+import org.plutext.msgraph.convert.AuthConfigImpl;
+import org.plutext.msgraph.convert.DocxToPDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +29,6 @@ import com.microsoft.graph.models.extensions.DriveItem;
 import com.microsoft.graph.models.extensions.DriveItemUploadableProperties;
 import com.microsoft.graph.models.extensions.IGraphServiceClient;
 import com.microsoft.graph.models.extensions.UploadSession;
-import com.microsoft.graph.options.Option;
 import com.microsoft.graph.requests.extensions.GraphServiceClient;
 
 /**
@@ -37,7 +42,7 @@ import com.microsoft.graph.requests.extensions.GraphServiceClient;
  * @author jharrop
  *
  */
-public class PdfConverterLarge {
+public class PdfConverterLarge  extends DocxToPDF {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfConverterLarge.class);
 	
@@ -47,11 +52,30 @@ public class PdfConverterLarge {
 				+ "/../sample-docx.docx");
 //				+ "/79_half.docx"); 
 		
+		DocxToPDF converter = new PdfConverterLarge();
+		byte[] pdf = converter.convert(inFile);
+		        
+        File file = new File(System.getProperty("user.dir")
+				+ "/out.pdf");
+
+        FileUtils.writeByteArrayToFile(file, pdf); ;//.copyInputStreamToFile(inputStream, file);
+        System.out.println("saved " + file.getName());
+		
+	}
+		
+		
+
+	public byte[] convert(InputStream fileStream, long streamSize) throws IOException {
+		
+		
+		AuthConfig authConfig = new AuthConfigImpl();
+
+		
     	List<String> scopes = new ArrayList<String>();
     	scopes.add("https://graph.microsoft.com/.default");
 		ClientCredentialProvider authProvider = 
-				new ClientCredentialProvider(AuthConfig.apiKey(), scopes, AuthConfig.apiSecret(), 
-						AuthConfig.tenant(), NationalCloud.Global);	
+				new ClientCredentialProvider(authConfig.apiKey(), scopes, authConfig.apiSecret(), 
+						authConfig.tenant(), NationalCloud.Global);	
 		
 //		Using msgraph-sdk-java
 		IGraphServiceClient graphClient = GraphServiceClient
@@ -65,17 +89,15 @@ public class PdfConverterLarge {
         String tmpFileName = UUID.randomUUID()+ ".docx"; // TODO dotx/dotm etc
         
 //        String requestUrl = path +"root:/" + tmpFileName + ":/content";		
-		String convertPathPrefix = "/sites/" + AuthConfig.siteId + "/drive/items/";
+		String convertPathPrefix = "/sites/" + authConfig.site() + "/drive/items/";
 		String item =  "root:/" + tmpFileName +":";	
 
 		
 		// support more than 4MB, using large file uploader; see https://docs.microsoft.com/en-us/graph/sdks/large-file-upload?tabs=java
-		InputStream fileStream = new FileInputStream(inFile);
-		long streamSize = inFile.length();
 
 		// Create an upload session
 		UploadSession uploadSession = graphClient
-				.sites(AuthConfig.siteId).drive().items(item)
+				.sites(authConfig.site()).drive().items(item)
 		    .createUploadSession(new DriveItemUploadableProperties())
 		    .buildRequest()
 		    .post();
@@ -90,25 +112,63 @@ public class PdfConverterLarge {
 		int[] customConfig = { 320 * 1024 };
 
 		// Do the upload
+		MyCallback myCallback = new  MyCallback(graphClient, convertPathPrefix, authConfig.site(), item);
+		
 		chunkedUploadProvider.upload(
-				new MyCallback(graphClient, convertPathPrefix, item), 
+				myCallback, 
 				customConfig);
 		
-		Thread.sleep(10000);
+		// wait
+		try {
+			myCallback.ft.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return myCallback.pdf;
+		
+	}	
+	
 
+	@Override
+	public byte[] convert(byte[] docx) throws IOException {
+		
+		InputStream fileStream = new ByteArrayInputStream(docx);
+
+		return convert( fileStream,  docx.length);
+		
 	}
+
+	@Override
+	public byte[] convert(File docx) throws IOException {
+		return convert( FileUtils.readFileToByteArray(docx));
+	}
+	
+	@Override
+	public byte[] convert(InputStream docx) throws IOException {
+		// inefficient, but we need length
+		return convert( IOUtils.toByteArray(docx) );
+	}	
+	
 	
 	static class MyCallback implements IProgressCallback<DriveItem> {
 
-		MyCallback(IGraphServiceClient graphClient, String convertPathPrefix, String item) {
+		MyCallback(IGraphServiceClient graphClient, String convertPathPrefix, String site, String item) {
 			this.graphClient = graphClient;
 			this.convertPathPrefix = convertPathPrefix;
+			this.site = site;
 			this.item = item;
 		}
 		
 		String convertPathPrefix;
+		String site;
 		String item;
 		IGraphServiceClient graphClient;
+		
+		byte[] pdf;
+
+		final FutureTask<Object> ft = new FutureTask<Object>(() -> {}, new Object());			
 		
 		@Override
 		public void success(DriveItem result) {
@@ -138,12 +198,7 @@ public class PdfConverterLarge {
 //						.buildRequest( requestOptions ).get();
 			
 	        ) {
-
-	            File file = new File(System.getProperty("user.dir")
-	    				+ "/out.pdf");
-
-	            FileUtils.copyInputStreamToFile(inputStream, file);
-	            System.out.println("saved " + file.getName());
+				pdf = IOUtils.toByteArray(inputStream);
 	        } catch (ClientException e1) {
 				e1.printStackTrace();
 			} catch (IOException e1) {
@@ -151,8 +206,11 @@ public class PdfConverterLarge {
 			}			
 						
 			// Move to recycle bin
-			graphClient.sites(AuthConfig.siteId).drive().items(item)
+			graphClient.sites(site).drive().items(item)
 					.buildRequest().delete();
+			
+			ft.run(); // so we can know this callback has been finished
+			
 		}
 
 
@@ -172,5 +230,7 @@ public class PdfConverterLarge {
 
 		
 	}
+
+
 	
 }

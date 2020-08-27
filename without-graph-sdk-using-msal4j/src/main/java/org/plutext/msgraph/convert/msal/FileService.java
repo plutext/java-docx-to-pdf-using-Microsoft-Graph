@@ -1,4 +1,5 @@
-package org.plutext.msgraph.convert;
+package org.plutext.msgraph.convert.msal;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -92,6 +93,29 @@ public class FileService {
         		
     }
 
+    public Future<Boolean> uploadStreamAsync(String requestUrl, File bodyContents, String contentType) throws InterruptedException, ExecutionException {
+    	
+    	HttpClient client = getHttpClient().get();
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("ContentType",  contentType);
+        
+        if (authResult == null) {
+        	authResult = getBearerToken().get();
+        }
+        headers.put("Authorization",  "Bearer " + authResult.accessToken() );
+        System.out.println(authResult.accessToken());
+        // 'Accept':'application/json;odata.metadata=minimal'}
+        headers.put("Accept",  "application/json;odata.metadata=minimal");
+        
+      System.out.println(requestUrl);
+      OAuthRequest.ResponseConverter uploadResponseConverter = new UploadResponseConverter(); 
+      OAuthAsyncRequestCallback callback = new UploadOAuthAsyncRequestCallback(); 
+        return client.executeAsync("ScribeJava", headers, Verb.PUT, requestUrl, bodyContents, 
+        		callback,  uploadResponseConverter);
+        		
+    }
+    
     class UploadOAuthAsyncRequestCallback implements OAuthAsyncRequestCallback<Boolean> /* must match ResponseConverter */ {
 
 		public void onCompleted(Boolean response) {

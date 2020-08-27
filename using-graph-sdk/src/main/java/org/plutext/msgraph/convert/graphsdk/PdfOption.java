@@ -1,4 +1,4 @@
-package org.plutext.msgraph.convert;
+package org.plutext.msgraph.convert.graphsdk;
 
 import com.microsoft.graph.options.Option;
 

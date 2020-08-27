@@ -1,4 +1,4 @@
-package org.plutext.msgraph.convert.scribe;
+package org.plutext.msgraph.convert.scribe.adaption;
 
 import com.github.scribejava.apis.MicrosoftAzureActiveDirectory20Api;
 

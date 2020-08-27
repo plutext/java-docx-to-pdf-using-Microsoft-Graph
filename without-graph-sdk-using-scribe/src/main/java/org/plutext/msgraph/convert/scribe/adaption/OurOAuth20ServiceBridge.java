@@ -1,4 +1,4 @@
-package org.plutext.msgraph.convert.scribe;
+package org.plutext.msgraph.convert.scribe.adaption;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;

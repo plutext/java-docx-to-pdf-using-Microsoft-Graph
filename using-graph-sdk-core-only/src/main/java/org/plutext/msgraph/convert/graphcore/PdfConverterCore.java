@@ -1,4 +1,4 @@
-package org.plutext.msgraph.convert;
+package org.plutext.msgraph.convert.graphcore;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.plutext.msgraph.convert.AuthConfig;
+import org.plutext.msgraph.convert.AuthConfigImpl;
+import org.plutext.msgraph.convert.DocxToPDF;
+import org.plutext.msgraph.convert.PRIVATE_AuthConfigImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,22 +38,71 @@ import okhttp3.Response;
  * @author jharrop
  *
  */
-public class PdfConverterCore {
+public class PdfConverterCore  extends DocxToPDF {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfConverterCore.class);
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
 
 		File inFile = new File(System.getProperty("user.dir")
-//				+ "/../sample-docx.docx");
-//				+ "/../79_half.docx"); // 413 : Request Entity Too Large
-				+ "/toc.docx");
+				+ "/../sample-docx.docx");
+//				+ "/79_half.docx"); // 413 : Request Entity Too Large
+		
+		DocxToPDF converter = new PdfConverterCore();
+		byte[] pdf = converter.convert(inFile);
+		        
+        File file = new File(System.getProperty("user.dir")
+				+ "/out.pdf");
+
+        FileUtils.writeByteArrayToFile(file, pdf); ;//.copyInputStreamToFile(inputStream, file);
+        System.out.println("saved " + file.getName());
+		
+	}
+	
+	
+
+	@Override
+	public byte[] convert(File inFile) throws IOException {
+		
+		MediaType mt = MediaType.parse("application/vnd.openxmlformats-officedocument.wordprocessingml.document; charset=utf-8");
+		// can create RequestBody from byte[] or FIle
+		RequestBody body = RequestBody.create(mt, inFile);
+		return convert(body);
+		
+	}
+
+	@Override
+	public byte[] convert(InputStream docx) throws IOException {
+		
+		return convert( IOUtils.toByteArray(docx) );
+	}	
+	
+	
+	@Override
+	public byte[] convert(byte[] docx) throws IOException { 
+
+		MediaType mt = MediaType.parse("application/vnd.openxmlformats-officedocument.wordprocessingml.document; charset=utf-8");
+		
+		RequestBody body = RequestBody.create(mt, docx);
+		return convert(body);
+		
+}
+
+	/**
+	 * We can create RequestBody from byte[] or File
+	 * @param body
+	 * @return
+	 * @throws IOException 
+	 */
+	public byte[] convert(RequestBody body) throws IOException {
+		
+		AuthConfig authConfig = new AuthConfigImpl();
 		
     	List<String> scopes = new ArrayList<String>();
     	scopes.add("https://graph.microsoft.com/.default");
 		ClientCredentialProvider authProvider = 
-				new ClientCredentialProvider(AuthConfig.apiKey(), scopes, AuthConfig.apiSecret(), 
-						AuthConfig.tenant(), NationalCloud.Global);	
+				new ClientCredentialProvider(authConfig.apiKey(), scopes, authConfig.apiSecret(), 
+						authConfig.tenant(), NationalCloud.Global);	
 		
 //		Using msgraph-sdk-java
 		IGraphServiceClient graphClient = GraphServiceClient
@@ -58,12 +112,10 @@ public class PdfConverterCore {
 
         String tmpFileName = UUID.randomUUID()+ ".docx"; // TODO dotx/dotm etc
 		String item =  "root:/" + tmpFileName +":";	
-		String path = "https://graph.microsoft.com/v1.0/sites/" + AuthConfig.siteId + "/drive/items/" + item + "/content";
+		String path = "https://graph.microsoft.com/v1.0/sites/" + authConfig.site() + "/drive/items/" + item + "/content";
 		
 		// Upload
 		OkHttpClient client = HttpClients.createDefault(authProvider);
-		MediaType mt = MediaType.parse("application/vnd.openxmlformats-officedocument.wordprocessingml.document; charset=utf-8");
-		RequestBody body = RequestBody.create(mt, inFile);
 		Request request = new Request.Builder().url(path).put(body).build();
 		Response response = client.newCall(request).execute();
 //		System.out.println(response.body().string());
@@ -73,15 +125,12 @@ public class PdfConverterCore {
 		request = new Request.Builder().url(path + "?format=pdf").build();
 		response = client.newCall(request).execute();
 		//System.out.println(response.body().string());
+		byte[] pdf = null;
 		try (
 				InputStream inputStream = response.body().byteStream()
         ) {
-
-            File file = new File(System.getProperty("user.dir")
-    				+ "/out.pdf");
-
-            FileUtils.copyInputStreamToFile(inputStream, file);
-            System.out.println("saved " + file.getName());
+			
+			pdf = IOUtils.toByteArray(inputStream);;
         } catch (ClientException e1) {
 			e1.printStackTrace();
 		} catch (IOException e1) {
@@ -89,12 +138,13 @@ public class PdfConverterCore {
 		}			
 		
 		// Move temp file to recycle
-		path = "https://graph.microsoft.com/v1.0/sites/" + AuthConfig.siteId + "/drive/items/" + item;  // filename is easier than item id here
+		path = "https://graph.microsoft.com/v1.0/sites/" + authConfig.site() + "/drive/items/" + item;  // filename is easier than item id here
 		request = new Request.Builder().url(path).delete().build();
 		response = client.newCall(request).execute();
 		System.out.println("Delete? " + response.code());
 		System.out.println(response.body().string());
 		
+		return pdf;
 
 	}
 	

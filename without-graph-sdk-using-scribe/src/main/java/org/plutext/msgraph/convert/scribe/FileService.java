@@ -1,4 +1,5 @@
-package org.plutext.msgraph.convert;
+package org.plutext.msgraph.convert.scribe;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 import org.apache.commons.io.IOUtils;
-import org.plutext.msgraph.convert.scribe.OurOAuth20ServiceBridge;
+import org.plutext.msgraph.convert.scribe.adaption.OurOAuth20ServiceBridge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +86,22 @@ public class FileService {
 
         
     public Future<Boolean> uploadStreamAsync(String requestUrl, byte[] bodyContents, String contentType) throws InterruptedException, ExecutionException {
+    	
+    	HttpClient client = getHttpClient().get();
+                
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("ContentType",  contentType);
+        headers.put("Authorization",  "Bearer " + getBearerToken().get() );
+        // 'Accept':'application/json;odata.metadata=minimal'}
+        headers.put("Accept",  "application/json;odata.metadata=minimal");
+        
+      System.out.println(requestUrl);
+        return client.executeAsync("ScribeJava", headers, Verb.PUT, requestUrl, bodyContents, 
+        		new UploadOAuthAsyncRequestCallback(), new UploadResponseConverter() );
+        		
+    }
+
+    public Future<Boolean> uploadStreamAsync(String requestUrl, File bodyContents, String contentType) throws InterruptedException, ExecutionException {
     	
     	HttpClient client = getHttpClient().get();
                 
