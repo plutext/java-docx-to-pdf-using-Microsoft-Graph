@@ -24,16 +24,17 @@ Which module works best for you may depend on:
 - your sensibilities (using-graph-sdk is the most obscure, but supports big (4MB) files 
 - the using-graph-sdk modules use a -SNAPSHOT preview of microsoft-graph-auth which you may wish to avoid 
 
-Whichever you choose, you configure it in the graph-convert-config module.
+Whichever you choose, look at the graph-convert-sample module; specify your chosen module in the pom there.  
+(Copy the pom and Java source code from this module into your IDE as a new project) 
 
 Before you start, you'll need to set some stuff up in Microsoft's cloud.  I followed https://medium.com/medialesson/convert-files-to-pdf-using-microsoft-graph-azure-functions-20bc84d2adc4 but the following may also help:
 
 - https://docs.microsoft.com/en-us/graph/tutorials/java
 - https://docs.microsoft.com/en-us/graph/auth-register-app-v2
 
-This info you then setup in the graph-convert-config module.
+This info you then setup in the graph-convert-sample module's AuthConfigImpl.
 
-Once you've done that, you can open any of the modules in your IDE and run it.  You'll need to specify a docx file of course.
+Once you've done that, you can run https://github.com/plutext/java-docx-to-pdf-using-Microsoft-Graph/blob/master/graph-convert-sample/src/main/java/samples/ConvertDocxToPdfExample.java.  You'll need to specify a docx file of course.
 
 Notes/caveats:
 
