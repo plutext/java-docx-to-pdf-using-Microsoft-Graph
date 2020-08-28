@@ -33,6 +33,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.plutext.msgraph.convert.DocxToPdfConverter;
 import org.plutext.msgraph.convert.AuthConfig;
+import org.plutext.msgraph.convert.ConversionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,11 +62,11 @@ public class Limited4MB extends DocxToPdfConverter {
 		super(authConfig);
 	}
 
-	private static final Logger LOG = LoggerFactory.getLogger(Limited4MB.class);
+	private static final Logger log = LoggerFactory.getLogger(Limited4MB.class);
 		
 	
 	@Override
-	public byte[] convert(byte[] docx) {
+	public byte[] convert(byte[] docx) throws ConversionException {
 		
 		
     	List<String> scopes = new ArrayList<String>();
@@ -98,23 +99,21 @@ public class Limited4MB extends DocxToPdfConverter {
 		// wait
 		try {
 			myCallback.ft.get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new ConversionException(e.getMessage(), e);
 		}
 		return myCallback.pdf;
 		
 	}
 
 	@Override
-	public byte[] convert(File docx) throws IOException {
+	public byte[] convert(File docx) throws ConversionException, IOException {
 		
 		return convert( FileUtils.readFileToByteArray(docx));
 	}
 
 	@Override
-	public byte[] convert(InputStream docx) throws IOException {
+	public byte[] convert(InputStream docx) throws ConversionException, IOException {
 		
 		return convert( IOUtils.toByteArray(docx) );
 	}	
@@ -163,10 +162,12 @@ public class Limited4MB extends DocxToPdfConverter {
 	        ) {
 				pdf = IOUtils.toByteArray(inputStream);
 
-	        } catch (ClientException e1) {
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
+	        } catch (ClientException e) {
+	        	log.error(e.getMessage(), e);
+	        	throw new RuntimeException(e.getMessage(), e);
+			} catch (IOException e) {
+	        	log.error(e.getMessage(), e);
+	        	throw new RuntimeException(e.getMessage(), e);
 			}			
 						
 			// Move to recycle bin
@@ -179,7 +180,7 @@ public class Limited4MB extends DocxToPdfConverter {
 
 		@Override
 		public void failure(ClientException ex) {
-			System.out.println("failed :-(");
+			log.error("Conversion failed", ex);
 			
 		}
 

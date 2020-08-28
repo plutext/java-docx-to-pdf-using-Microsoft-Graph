@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutionException;
 import org.apache.commons.io.IOUtils;
 import org.plutext.msgraph.convert.DocxToPdfConverter;
 import org.plutext.msgraph.convert.AuthConfig;
+import org.plutext.msgraph.convert.ConversionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,8 @@ import com.microsoft.aad.msal4j.ConfidentialClientApplication;
 
 
 public class PdfConverter  extends DocxToPdfConverter  {
+	
+	private static final Logger log = LoggerFactory.getLogger(PdfConverter.class);
 	
 	/**
 	 * PdfConverter using scribe's JDKHttpClient
@@ -71,7 +74,7 @@ public class PdfConverter  extends DocxToPdfConverter  {
 			          .build();
 		} catch (MalformedURLException e) {
 			// shouldn't happen
-			e.printStackTrace();
+			log.error(e.getMessage(),e);
 		}    	
 
 		return confidentialClientApp;
@@ -82,7 +85,7 @@ public class PdfConverter  extends DocxToPdfConverter  {
 	FileService fs = null ;
 	
 	@Override
-	public byte[] convert(byte[] docx) {
+	public byte[] convert(byte[] docx) throws ConversionException {
 		try {
 			
 			// Upload the file
@@ -96,8 +99,7 @@ public class PdfConverter  extends DocxToPdfConverter  {
 			Boolean result = fs.uploadStreamAsync(path, docx, 
 					"application/vnd.openxmlformats-officedocument.wordprocessingml.document").get();
 			if (result==null || result.booleanValue()==false) {
-				System.out.println("Upload failed, terminating.");
-				throw new RuntimeException("upload failed");
+				throw new ConversionException("upload failed");
 			}
 			
 			// Convert
@@ -106,27 +108,24 @@ public class PdfConverter  extends DocxToPdfConverter  {
 			// Move temp file to recycle bin
 			path = "https://graph.microsoft.com/v1.0/sites/" + authConfig.site() + "/drive/items/" + item;  // filename is easier than item id here			
 			boolean deleted = fs.deleteFileAsync(path).get();
-			System.out.println(deleted);
+			log.debug(""+deleted);
 			
 			return pdfBytes;
 			
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new ConversionException(e.getMessage(), e);			
 		}
-		return null;
 	}
 
 
 	@Override
-	public byte[] convert(InputStream docx) throws IOException {
+	public byte[] convert(InputStream docx) throws ConversionException, IOException {
 		return convert( IOUtils.toByteArray(docx) );
 	}	
 	
 	
 	@Override
-	public byte[] convert(File inFile) throws IOException {
+	public byte[] convert(File inFile) throws ConversionException, IOException {
 
 		try {
 			
@@ -141,8 +140,8 @@ public class PdfConverter  extends DocxToPdfConverter  {
 			Boolean result = fs.uploadStreamAsync(path, inFile, 
 					"application/vnd.openxmlformats-officedocument.wordprocessingml.document").get();
 			if (result==null || result.booleanValue()==false) {
-				System.out.println("Upload failed, terminating.");
-				throw new RuntimeException("upload failed");
+				log.error("Upload failed, terminating.");
+				throw new ConversionException("upload failed");
 			}
 			
 			// Convert
@@ -151,16 +150,13 @@ public class PdfConverter  extends DocxToPdfConverter  {
 			// Move temp file to recycle bin
 			path = "https://graph.microsoft.com/v1.0/sites/" + authConfig.site() + "/drive/items/" + item;  // filename is easier than item id here			
 			boolean deleted = fs.deleteFileAsync(path).get();
-			System.out.println(deleted);
+			log.debug("" + deleted);
 			
 			return pdfBytes;
 			
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new ConversionException(e.getMessage(), e);			
 		}
-		return null;
 	}
 	
 	

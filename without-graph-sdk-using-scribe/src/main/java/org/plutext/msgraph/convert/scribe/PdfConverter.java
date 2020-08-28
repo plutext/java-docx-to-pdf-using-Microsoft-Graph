@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 import org.apache.commons.io.IOUtils;
 import org.plutext.msgraph.convert.DocxToPdfConverter;
 import org.plutext.msgraph.convert.AuthConfig;
+import org.plutext.msgraph.convert.ConversionException;
 import org.plutext.msgraph.convert.scribe.adaption.OurMicrosoftAzureActiveDirectoryEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,14 +48,15 @@ import com.github.scribejava.core.oauth.OAuth20Service;
  */
 public class PdfConverter  extends DocxToPdfConverter  {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PdfConverter.class);
+	private static final Logger log = LoggerFactory.getLogger(PdfConverter.class);
 	
 
 	/**
 	 * PdfConverter using scribe's JDKHttpClient
 	 * @param authConfig
+	 * @throws ConversionException 
 	 */
-	public PdfConverter(AuthConfig authConfig) {
+	public PdfConverter(AuthConfig authConfig) throws ConversionException {
 		super(authConfig);
     	
 		// See https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/v1-oauth2-client-creds-grant-flow
@@ -70,8 +72,9 @@ public class PdfConverter  extends DocxToPdfConverter  {
 	/**
 	 * PdfConverter using specified HttpClient, configured in your pom.
 	 * @param authConfig
+	 * @throws ConversionException 
 	 */
-	public PdfConverter(AuthConfig authConfig, HttpClient httpClient) {
+	public PdfConverter(AuthConfig authConfig, HttpClient httpClient) throws ConversionException {
 		super(authConfig);
     	
 		// See https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/v1-oauth2-client-creds-grant-flow
@@ -89,7 +92,7 @@ public class PdfConverter  extends DocxToPdfConverter  {
 
 	
 	@Override
-	public byte[] convert(byte[] docx) {
+	public byte[] convert(byte[] docx) throws ConversionException {
 		try {
 			
 			// Upload the file
@@ -102,8 +105,7 @@ public class PdfConverter  extends DocxToPdfConverter  {
 					"application/vnd.openxmlformats-officedocument.wordprocessingml.document").get();
 //			System.out.println(fileId);
 			if (result==null || result.booleanValue()==false) {
-				System.out.println("Upload failed, terminating.");
-				throw new RuntimeException("upload failed");
+				throw new ConversionException("upload failed");
 			}
 			
 			// Convert
@@ -112,21 +114,18 @@ public class PdfConverter  extends DocxToPdfConverter  {
 			// Move temp file to recycle bin
 			path = "https://graph.microsoft.com/v1.0/sites/" + authConfig.site() + "/drive/items/" + item;  // filename is easier than item id here
 			boolean deleted = fs.deleteFileAsync(path).get();
-			System.out.println(deleted);
+			log.debug(""+deleted);
 			
 			return pdfBytes;
 			
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new ConversionException(e.getMessage(), e);			
 		}
-		return null;
 		
 	}
 	
 	@Override
-	public byte[] convert(InputStream docx) throws IOException {
+	public byte[] convert(InputStream docx) throws ConversionException, IOException {
 		return convert( IOUtils.toByteArray(docx) );
 	}	
 	
@@ -135,7 +134,7 @@ public class PdfConverter  extends DocxToPdfConverter  {
 	 * Note that JDKHttpClient does not support File payload
 	 */
 	@Override
-	public byte[] convert(File inFile) throws IOException {
+	public byte[] convert(File inFile) throws ConversionException, IOException {
 
 		try {
 			
@@ -150,8 +149,7 @@ public class PdfConverter  extends DocxToPdfConverter  {
 			Boolean result = fs.uploadStreamAsync(path, inFile, 
 					"application/vnd.openxmlformats-officedocument.wordprocessingml.document").get();
 			if (result==null || result.booleanValue()==false) {
-				System.out.println("Upload failed, terminating.");
-				throw new RuntimeException("upload failed");
+				throw new ConversionException("upload failed");
 			}
 			
 			// Convert
@@ -160,25 +158,22 @@ public class PdfConverter  extends DocxToPdfConverter  {
 			// Move temp file to recycle bin
 			path = "https://graph.microsoft.com/v1.0/sites/" + authConfig.site() + "/drive/items/" + item;  // filename is easier than item id here			
 			boolean deleted = fs.deleteFileAsync(path).get();
-			System.out.println(deleted);
+			log.debug(""+deleted);
 			
 			return pdfBytes;
 			
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new ConversionException(e.getMessage(), e);			
 		}
-		return null;
 	}
 	
 	
 	
 	
 	private OAuth20Service getAuthService(MicrosoftAzureActiveDirectory20Api api,
-			AuthConfig authConfig) {
+			AuthConfig authConfig) throws ConversionException {
 		try {
-			LOG.debug("create connection with apiKey: {} apiSecret: {}", authConfig.apiKey(), authConfig.apiSecret());
+			log.debug("create connection with apiKey: {} apiSecret: {}", authConfig.apiKey(), authConfig.apiSecret());
 			
 			
 			return new ServiceBuilder(authConfig.apiKey())
@@ -186,9 +181,9 @@ public class PdfConverter  extends DocxToPdfConverter  {
 					       .apiSecret(authConfig.apiSecret())
 					.build(api);
 		} catch (Exception e) {
-			LOG.error("Office 365 authentication is misconfigured, original error was : {}", e.getMessage());
-			LOG.debug("Office 365 authentication detail misconfiguration", e);
-			throw new RuntimeException("Office 365 authentication is misconfigured", e);
+			log.error("Office 365 authentication is misconfigured, original error was : {}", e.getMessage());
+			log.debug("Office 365 authentication detail misconfiguration", e);
+			throw new ConversionException("Office 365 authentication is misconfigured", e);
 		}
 	}	
 	

@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.plutext.msgraph.convert.AuthConfig;
+import org.plutext.msgraph.convert.ConversionException;
 import org.plutext.msgraph.convert.DocxToPdfConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,10 +67,10 @@ public class PdfConverterLarge  extends DocxToPdfConverter {
 	}
 
 
-	private static final Logger LOG = LoggerFactory.getLogger(PdfConverterLarge.class);
+	private static final Logger log = LoggerFactory.getLogger(PdfConverterLarge.class);
 			
 
-	public byte[] convert(InputStream fileStream, long streamSize) throws IOException {
+	public byte[] convert(InputStream fileStream, long streamSize) throws ConversionException, IOException {
 		
     	List<String> scopes = new ArrayList<String>();
     	scopes.add("https://graph.microsoft.com/.default");
@@ -121,10 +122,8 @@ public class PdfConverterLarge  extends DocxToPdfConverter {
 		// wait
 		try {
 			myCallback.ft.get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new ConversionException(e.getMessage(), e);
 		}
 		return myCallback.pdf;
 		
@@ -132,21 +131,25 @@ public class PdfConverterLarge  extends DocxToPdfConverter {
 	
 
 	@Override
-	public byte[] convert(byte[] docx) throws IOException {
+	public byte[] convert(byte[] docx) throws ConversionException {
 		
 		InputStream fileStream = new ByteArrayInputStream(docx);
 
-		return convert( fileStream,  docx.length);
+		try {
+			return convert( fileStream,  docx.length);
+		} catch (IOException e) {
+			throw new ConversionException(e.getMessage(), e);
+		}
 		
 	}
 
 	@Override
-	public byte[] convert(File docx) throws IOException {
+	public byte[] convert(File docx) throws ConversionException, IOException {
 		return convert( FileUtils.readFileToByteArray(docx));
 	}
 	
 	@Override
-	public byte[] convert(InputStream docx) throws IOException {
+	public byte[] convert(InputStream docx) throws ConversionException, IOException {
 		// inefficient, but we need length
 		return convert( IOUtils.toByteArray(docx) );
 	}	
@@ -172,10 +175,10 @@ public class PdfConverterLarge  extends DocxToPdfConverter {
 		
 		@Override
 		public void success(DriveItem result) {
-	        System.out.println(
+	        log.debug(
 		            String.format("Uploaded file with ID: %s", result.id)
 		        );
-			System.out.println(result.size);
+	        log.debug(""+result.size);
 			
 			//         String requestUrl = path + fileId + "/content?format=" + targetFormat;
 //			graphClient.sites(siteId).drive().items("root:/" +tmpFileName+":")..content()..buildRequest()
@@ -199,10 +202,12 @@ public class PdfConverterLarge  extends DocxToPdfConverter {
 			
 	        ) {
 				pdf = IOUtils.toByteArray(inputStream);
-	        } catch (ClientException e1) {
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
+	        } catch (ClientException e) {
+	        	log.error(e.getMessage(), e);
+	        	throw new RuntimeException(e.getMessage(), e);
+			} catch (IOException e) {
+	        	log.error(e.getMessage(), e);
+	        	throw new RuntimeException(e.getMessage(), e);
 			}			
 						
 			// Move to recycle bin
@@ -223,7 +228,7 @@ public class PdfConverterLarge  extends DocxToPdfConverter {
 	    @Override
 	    // Called after each slice of the file is uploaded
 	    public void progress(final long current, final long max) {
-	        System.out.println(
+	        log.debug(
 	            String.format("Uploaded %d bytes of %d total bytes", current, max)
 	        );
 	    }

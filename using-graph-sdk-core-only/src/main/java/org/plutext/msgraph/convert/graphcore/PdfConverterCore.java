@@ -28,6 +28,7 @@ import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.plutext.msgraph.convert.DocxToPdfConverter;
 import org.plutext.msgraph.convert.AuthConfig;
+import org.plutext.msgraph.convert.ConversionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,11 +59,11 @@ public class PdfConverterCore  extends DocxToPdfConverter {
 		super(authConfig);
 	}
 
-	private static final Logger LOG = LoggerFactory.getLogger(PdfConverterCore.class);
+	private static final Logger log = LoggerFactory.getLogger(PdfConverterCore.class);
 	
 
 	@Override
-	public byte[] convert(File inFile) throws IOException {
+	public byte[] convert(File inFile) throws ConversionException, IOException {
 		
 		MediaType mt = MediaType.parse("application/vnd.openxmlformats-officedocument.wordprocessingml.document; charset=utf-8");
 		// can create RequestBody from byte[] or FIle
@@ -72,19 +73,25 @@ public class PdfConverterCore  extends DocxToPdfConverter {
 	}
 
 	@Override
-	public byte[] convert(InputStream docx) throws IOException {
+	public byte[] convert(InputStream docx) throws ConversionException, IOException {
 		
 		return convert( IOUtils.toByteArray(docx) );
 	}	
 	
 	
 	@Override
-	public byte[] convert(byte[] docx) throws IOException { 
+	public byte[] convert(byte[] docx) throws ConversionException { 
 
 		MediaType mt = MediaType.parse("application/vnd.openxmlformats-officedocument.wordprocessingml.document; charset=utf-8");
 		
 		RequestBody body = RequestBody.create(mt, docx);
-		return convert(body);
+		try {
+			return convert(body);
+		} catch (ConversionException e) {
+			throw e;
+		} catch (IOException e) {
+			throw new ConversionException(e.getMessage(), e);
+		}
 		
 }
 
@@ -94,7 +101,7 @@ public class PdfConverterCore  extends DocxToPdfConverter {
 	 * @return
 	 * @throws IOException 
 	 */
-	public byte[] convert(RequestBody body) throws IOException {
+	public byte[] convert(RequestBody body) throws ConversionException, IOException {
 		
     	List<String> scopes = new ArrayList<String>();
     	scopes.add("https://graph.microsoft.com/.default");
@@ -129,18 +136,16 @@ public class PdfConverterCore  extends DocxToPdfConverter {
         ) {
 			
 			pdf = IOUtils.toByteArray(inputStream);;
-        } catch (ClientException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}			
+        } catch (ClientException e) {
+        	throw new ConversionException(e.getMessage(), e);
+        } 		
 		
 		// Move temp file to recycle
 		path = "https://graph.microsoft.com/v1.0/sites/" + authConfig.site() + "/drive/items/" + item;  // filename is easier than item id here
 		request = new Request.Builder().url(path).delete().build();
 		response = client.newCall(request).execute();
-		System.out.println("Delete? " + response.code());
-		System.out.println(response.body().string());
+		log.debug("Delete? " + response.code());
+		log.debug(response.body().string());
 		
 		return pdf;
 

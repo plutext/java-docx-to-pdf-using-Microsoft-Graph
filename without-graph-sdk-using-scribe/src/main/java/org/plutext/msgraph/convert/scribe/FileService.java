@@ -91,12 +91,8 @@ public class FileService {
 				try {
 					OurOAuth20ServiceBridge bridge = new OurOAuth20ServiceBridge(authenticationService, api);
 					accessToken = bridge.getAccessTokenClientCredentialsGrant();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					throw new RuntimeException(e);
 				}
     	        bearerToken = accessToken.getAccessToken();
     	        System.out.println(bearerToken);
@@ -117,7 +113,7 @@ public class FileService {
         // 'Accept':'application/json;odata.metadata=minimal'}
         headers.put("Accept",  "application/json;odata.metadata=minimal");
         
-      System.out.println(requestUrl);
+        log.debug(requestUrl);
         return client.executeAsync("ScribeJava", headers, Verb.PUT, requestUrl, bodyContents, 
         		new UploadOAuthAsyncRequestCallback(), new UploadResponseConverter() );
         		
@@ -133,7 +129,7 @@ public class FileService {
         // 'Accept':'application/json;odata.metadata=minimal'}
         headers.put("Accept",  "application/json;odata.metadata=minimal");
         
-      System.out.println(requestUrl);
+        log.debug(requestUrl);
         return client.executeAsync("ScribeJava", headers, Verb.PUT, requestUrl, bodyContents, 
         		new UploadOAuthAsyncRequestCallback(), new UploadResponseConverter() );
         		
@@ -142,12 +138,12 @@ public class FileService {
     class UploadOAuthAsyncRequestCallback implements OAuthAsyncRequestCallback<Boolean> {
 
 		public void onCompleted(Boolean response) {
-			System.out.println("UploadOAuthAsyncRequestCallback: " + response);  // fileid; its the response converter output
+			log.debug("UploadOAuthAsyncRequestCallback: " + response);  // fileid; its the response converter output
 			
 		}
 
 		public void onThrowable(Throwable t) {
-			t.printStackTrace();
+			throw new RuntimeException(t);
 			
 		}
     	
@@ -156,12 +152,12 @@ public class FileService {
 	class UploadResponseConverter implements OAuthRequest.ResponseConverter<Boolean> {
 	
 		public Boolean convert(Response response) throws IOException {
-	        log.info("received response for upload");
+	        log.debug("received response for upload");
 	        String body=null; 
-	        if (log.isInfoEnabled()) {
-	            log.info("response status code: " + response.getCode());
+	        if (log.isDebugEnabled()) {
+	            log.debug("response status code: " + response.getCode());
 	            body = response.getBody();
-	            log.info("response body: " + body);
+	            log.debug("response body: " + body);
 	        }
 	        if (!response.isSuccessful() ) {
 	        	log.warn(response.getBody());
@@ -187,9 +183,9 @@ public class FileService {
         // 'Accept':'application/json;odata.metadata=minimal'}
 //        headers.put("Accept",  "application/json;odata.metadata=minimal");
         
-      System.out.println(requestUrl);
-      byte[] nullBytes=null;
-        return client.executeAsync("ScribeJava", headers, Verb.GET, requestUrl, nullBytes, 
+		log.debug(requestUrl);
+		byte[] nullBytes = null;
+		return client.executeAsync("ScribeJava", headers, Verb.GET, requestUrl, nullBytes,
         		new DownloadOAuthAsyncRequestCallback(), new DownloadResponseConverter() );
         		
     }
@@ -197,13 +193,13 @@ public class FileService {
     class DownloadOAuthAsyncRequestCallback implements OAuthAsyncRequestCallback<byte[]> {
 
 		public void onCompleted(byte[] response) {
-			System.out.println("callback oncompleted: downloaded " + response.length + " bytes");
+			log.debug("callback oncompleted: downloaded " + response.length + " bytes");
 			
 			
 		}
 
 		public void onThrowable(Throwable t) {
-			t.printStackTrace();
+			throw new RuntimeException(t);
 			
 		}
     	
@@ -212,7 +208,7 @@ public class FileService {
 	class DownloadResponseConverter implements OAuthRequest.ResponseConverter<byte[]> {
 		
 		public byte[] convert(Response response) throws IOException {
-	        log.info("received response for upload");
+	        log.debug("received response for upload");
 	        byte[] bytes = IOUtils.toByteArray(response.getStream());
 	        response.close();
 	        return bytes;
@@ -231,21 +227,22 @@ public class FileService {
         // 'Accept':'application/json;odata.metadata=minimal'}
 //        headers.put("Accept",  "application/json;odata.metadata=minimal");
         
-      System.out.println(requestUrl);
-      byte[] nullBytes=new byte[0];
-        return client.executeAsync("ScribeJava", headers, Verb.DELETE, requestUrl, nullBytes, null, new DeleteResponseConverter() );
+		log.debug(requestUrl);
+		byte[] nullBytes = new byte[0];
+		return client.executeAsync("ScribeJava", headers, Verb.DELETE, requestUrl, nullBytes, null,
+				new DeleteResponseConverter());
         		
     }
 
 	class DeleteResponseConverter implements OAuthRequest.ResponseConverter<Boolean> {
 		
 		public Boolean convert(Response response) throws IOException {
-	        log.info("received response for delete");
+	        log.debug("received response for delete");
 	        String body=null; 
-	        if (log.isInfoEnabled()) {
-	            log.info("response status code: " + response.getCode());
+	        if (log.isDebugEnabled()) {
+	            log.debug("response status code: " + response.getCode());
 	            body = response.getBody();
-	            log.info("response body: " + body);
+	            log.debug("response body: " + body);
 	        }
 	        
 	        return (response.isSuccessful());

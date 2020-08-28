@@ -30,10 +30,10 @@ public abstract class DocxToPdfConverter implements OpenXmlToPDF {
 	
 	protected AuthConfig authConfig;
 	
-	public abstract byte[] convert(byte[] docx) throws IOException;  
+	public abstract byte[] convert(byte[] docx) throws ConversionException;  
 	
-	public abstract byte[] convert(File docx) throws IOException;  
+	public abstract byte[] convert(File docx) throws ConversionException, IOException;  
 
-	public abstract byte[] convert(InputStream docx) throws IOException;  
+	public abstract byte[] convert(InputStream docx) throws ConversionException, IOException;  
 
 }
