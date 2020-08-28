@@ -8,53 +8,42 @@ import java.net.MalformedURLException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.plutext.msgraph.convert.DocxToPdfConverter;
 import org.plutext.msgraph.convert.AuthConfig;
-import org.plutext.msgraph.convert.AuthConfigImpl;
-import org.plutext.msgraph.convert.DocxToPDF;
-import org.plutext.msgraph.convert.PRIVATE_AuthConfigImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.scribejava.core.httpclient.HttpClient;
 import com.microsoft.aad.msal4j.ClientCredentialFactory;
 import com.microsoft.aad.msal4j.ConfidentialClientApplication;
 
 
-public class PdfConverter  extends DocxToPDF  {
+public class PdfConverter  extends DocxToPdfConverter  {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(PdfConverter.class);
-		
-	public static void main(String[] args) throws InterruptedException, ExecutionException, IOException {
-		
-		File f = new File(System.getProperty("user.dir")
-				+ "/../sample-docx.docx");
-		
-		PdfConverter converter = new PdfConverter();
-		byte[] pdfBytes = converter.convert(f);
-		
-		//System.out.println(new String(pdfBytes));
-		String sniffed = new String(pdfBytes, 0, 8);  // PDF?
-		if (sniffed.startsWith("%PDF")) {
-			System.out.println("PDF containing " + pdfBytes.length + " bytes");				
-		} else {
-			System.out.println("Not a PDF? " + sniffed );								
-		}
-        
-        File file = new File(System.getProperty("user.dir")
-				+ "/out.pdf");
-
-        FileUtils.writeByteArrayToFile(file, pdfBytes); ;//.copyInputStreamToFile(inputStream, file);
-        System.out.println("saved " + file.getName());
-		
+	/**
+	 * PdfConverter using scribe's JDKHttpClient
+	 * @param authConfig
+	 */
+	public PdfConverter(AuthConfig authConfig) {
+		super(authConfig);
+		fs = new FileService(getConfidentialClientApplication()); 
 	}
 
-	PdfConverter() {
-
-    	// Seee https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/v1-oauth2-client-creds-grant-flow
+	/**
+	 * PdfConverter using specified HttpClient, configured in your pom.
+	 * @param authConfig
+	 */
+	public PdfConverter(AuthConfig authConfig, HttpClient httpClient) {
+		super(authConfig);
+		fs = new FileService(getConfidentialClientApplication(), httpClient); 
 		
+	}
+	
+	private ConfidentialClientApplication getConfidentialClientApplication() {
+
+		// See https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/v1-oauth2-client-creds-grant-flow
     	ConfidentialClientApplication confidentialClientApp =null;
-		authConfig = new PRIVATE_AuthConfigImpl();//AuthConfigImpl();
 		try {
 			confidentialClientApp = ConfidentialClientApplication
 			          .builder(authConfig.apiKey(), 
@@ -63,14 +52,16 @@ public class PdfConverter  extends DocxToPDF  {
 			          .authority("https://login.microsoftonline.com/" + authConfig.tenant() + "/oauth2/token")
 			          .build();
 		} catch (MalformedURLException e) {
+			// shouldn't happen
 			e.printStackTrace();
 		}    	
 
-		fs = new FileService(confidentialClientApp); 
-		
+		return confidentialClientApp;
 	}
+
+	private static final Logger LOG = LoggerFactory.getLogger(PdfConverter.class);
+		
 	FileService fs = null ;
-	AuthConfig authConfig = null;
 	
 	@Override
 	public byte[] convert(byte[] docx) {

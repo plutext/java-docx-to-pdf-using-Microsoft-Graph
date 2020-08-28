@@ -20,7 +20,7 @@
 
 		<dependency>
 			<groupId>org.plutext</groupId>
-			<artifactId>graph-convert-config</artifactId>
+			<artifactId>graph-convert-base</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -36,7 +36,8 @@
 			<version>1.0.0</version>
             <!-- would pull in graph 1.7.1 but 1.9.0 is better -->
 		</dependency>
-        
+
+		<!-- Currently in preview, hence allow-snapshots profile below  -->        
 		<dependency>
 			<groupId>com.microsoft.graph</groupId>
 			<artifactId>microsoft-graph-auth</artifactId>
@@ -61,5 +62,20 @@
             </plugin>
         </plugins>
     </build>
+
+<profiles>
+  <profile>
+     <id>allow-snapshots</id>
+        <activation><activeByDefault>true</activeByDefault></activation>
+     <repositories>
+       <repository>
+         <id>snapshots-repo</id>
+         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+         <releases><enabled>false</enabled></releases>
+         <snapshots><enabled>true</enabled></snapshots>
+       </repository>
+     </repositories>
+   </profile>
+</profiles>
 
 </project>

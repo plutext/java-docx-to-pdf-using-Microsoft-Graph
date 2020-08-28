@@ -10,32 +10,57 @@
 	<version>${revision}</version>
   </parent>
   
-	<artifactId>without-graph-sdk-using-msal4j</artifactId>
+	<artifactId>graph-convert-sample</artifactId>
 	<packaging>${packaging.type}</packaging>
-	<name>without-graph-sdk-using-msal4j</name>
+	<name>graph-convert-sample</name>
 	
 	<description>
-		without-graph-sdk-using-msal4j
+		graph-convert-sample
 	</description>
 
 
 	<dependencies>
 
+		<!--  choose ONE only of the 4 following implementations -->
 		<dependency>
 			<groupId>org.plutext</groupId>
-			<artifactId>graph-convert-base</artifactId>
+			<artifactId>using-graph-sdk</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+<!-- 
+		<dependency>
+			<groupId>org.plutext</groupId>
+			<artifactId>using-graph-sdk-core-only</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.plutext</groupId>
+			<artifactId>without-graph-sdk-using-msal4j</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.microsoft.azure</groupId>
-			<artifactId>msal4j</artifactId>
-			<version>1.6.2</version>
+			<groupId>org.plutext</groupId>
+			<artifactId>without-graph-sdk-using-scribe</artifactId>
+			<version>${project.version}</version>
 		</dependency>
+ -->
+ <!-- 
 		<dependency>
 			<groupId>com.github.scribejava</groupId>
-			<artifactId>scribejava-apis</artifactId>
+			<artifactId>scribejava-httpclient-apache</artifactId>
 			<version>7.0.0</version>
+		</dependency>
+ -->		
+		<!--  if you choose without-graph-sdk-using-scribe, you can optionally also specify your preferred httpclient -->
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
 		</dependency>
 
 	</dependencies>

@@ -25,11 +25,12 @@
     <name>java-docx-to-pdf-using-Microsoft-Graph parent</name>
     
     <modules>
-        <module>graph-convert-config</module>
+        <module>graph-convert-base</module>
         <module>without-graph-sdk-using-scribe</module>
         <module>without-graph-sdk-using-msal4j</module>
         <module>using-graph-sdk-core-only</module>
         <module>using-graph-sdk</module>
+        <module>graph-convert-sample</module>
     </modules>
 	
 	<description>
@@ -60,24 +61,6 @@
   </scm>
 	<inceptionYear>2020</inceptionYear>
     
-    <dependencies>
-
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
-		</dependency>		 		
-
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.2.3</version>
-		</dependency>
-		
-		
-		
-    </dependencies>
-
     <build>
         <plugins>
 			<plugin>

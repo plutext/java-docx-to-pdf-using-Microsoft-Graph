@@ -20,7 +20,7 @@
 
 		<dependency>
 			<groupId>org.plutext</groupId>
-			<artifactId>graph-convert-config</artifactId>
+			<artifactId>graph-convert-base</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -30,6 +30,7 @@
 			<version>1.9.0</version>
 		</dependency>
 
+		<!-- Currently in preview, hence allow-snapshots profile below  -->        
 		<dependency>
 			<groupId>com.microsoft.graph</groupId>
 			<artifactId>microsoft-graph-auth</artifactId>

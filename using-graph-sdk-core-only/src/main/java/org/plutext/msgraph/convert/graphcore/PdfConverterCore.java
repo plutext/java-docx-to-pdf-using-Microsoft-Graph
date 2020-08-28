@@ -1,19 +1,15 @@
 package org.plutext.msgraph.convert.graphcore;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.plutext.msgraph.convert.DocxToPdfConverter;
 import org.plutext.msgraph.convert.AuthConfig;
-import org.plutext.msgraph.convert.AuthConfigImpl;
-import org.plutext.msgraph.convert.DocxToPDF;
-import org.plutext.msgraph.convert.PRIVATE_AuthConfigImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,27 +34,13 @@ import okhttp3.Response;
  * @author jharrop
  *
  */
-public class PdfConverterCore  extends DocxToPDF {
+public class PdfConverterCore  extends DocxToPdfConverter {
+
+	public PdfConverterCore(AuthConfig authConfig) {
+		super(authConfig);
+	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfConverterCore.class);
-	
-	public static void main(String[] args) throws IOException, InterruptedException {
-
-		File inFile = new File(System.getProperty("user.dir")
-				+ "/../sample-docx.docx");
-//				+ "/79_half.docx"); // 413 : Request Entity Too Large
-		
-		DocxToPDF converter = new PdfConverterCore();
-		byte[] pdf = converter.convert(inFile);
-		        
-        File file = new File(System.getProperty("user.dir")
-				+ "/out.pdf");
-
-        FileUtils.writeByteArrayToFile(file, pdf); ;//.copyInputStreamToFile(inputStream, file);
-        System.out.println("saved " + file.getName());
-		
-	}
-	
 	
 
 	@Override
@@ -95,8 +77,6 @@ public class PdfConverterCore  extends DocxToPDF {
 	 * @throws IOException 
 	 */
 	public byte[] convert(RequestBody body) throws IOException {
-		
-		AuthConfig authConfig = new AuthConfigImpl();
 		
     	List<String> scopes = new ArrayList<String>();
     	scopes.add("https://graph.microsoft.com/.default");

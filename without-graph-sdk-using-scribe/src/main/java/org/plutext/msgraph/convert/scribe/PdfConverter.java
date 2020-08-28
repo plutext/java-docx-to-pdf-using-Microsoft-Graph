@@ -2,24 +2,21 @@ package org.plutext.msgraph.convert.scribe;
 
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.plutext.msgraph.convert.DocxToPdfConverter;
 import org.plutext.msgraph.convert.AuthConfig;
-import org.plutext.msgraph.convert.AuthConfigImpl;
-import org.plutext.msgraph.convert.DocxToPDF;
-import org.plutext.msgraph.convert.PRIVATE_AuthConfigImpl;
 import org.plutext.msgraph.convert.scribe.adaption.OurMicrosoftAzureActiveDirectoryEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.scribejava.apis.MicrosoftAzureActiveDirectory20Api;
 import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.httpclient.HttpClient;
 import com.github.scribejava.core.oauth.OAuth20Service;
 
 
@@ -30,38 +27,18 @@ import com.github.scribejava.core.oauth.OAuth20Service;
  * @author jharrop
  *
  */
-public class PdfConverter  extends DocxToPDF  {
+public class PdfConverter  extends DocxToPdfConverter  {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PdfConverter.class);
 	
-	
-	public static void main(String[] args) throws IOException {
-		
-		File f = new File(System.getProperty("user.dir")
-				+ "/../sample-docx.docx");
-		DocxToPDF converter = new PdfConverter();
-		byte[] pdfBytes = converter.convert( new FileInputStream(f));
-		
-		//System.out.println(new String(pdfBytes));
-		String sniffed = new String(pdfBytes, 0, 8);  // PDF?
-		if (sniffed.startsWith("%PDF")) {
-			System.out.println("PDF containing " + pdfBytes.length + " bytes");				
-		} else {
-			System.out.println("Not a PDF? " + sniffed );								
-		}
-        
-        File file = new File(System.getProperty("user.dir")
-				+ "/out.pdf");
 
-        FileUtils.writeByteArrayToFile(file, pdfBytes); ;//.copyInputStreamToFile(inputStream, file);
-        System.out.println("saved " + file.getName());
-		
-	}
-
-	PdfConverter() {
+	/**
+	 * PdfConverter using scribe's JDKHttpClient
+	 * @param authConfig
+	 */
+	public PdfConverter(AuthConfig authConfig) {
+		super(authConfig);
     	
-		authConfig = new AuthConfigImpl();
-
 		// See https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/v1-oauth2-client-creds-grant-flow
 		
 		MicrosoftAzureActiveDirectory20Api api = OurMicrosoftAzureActiveDirectoryEndpoint.custom(authConfig.tenant());
@@ -71,8 +48,25 @@ public class PdfConverter  extends DocxToPDF  {
 
 		fs = new FileService(azureAuthService, api); 
 	}
+	
+	/**
+	 * PdfConverter using specified HttpClient, configured in your pom.
+	 * @param authConfig
+	 */
+	public PdfConverter(AuthConfig authConfig, HttpClient httpClient) {
+		super(authConfig);
+    	
+		// See https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/v1-oauth2-client-creds-grant-flow
+		
+		MicrosoftAzureActiveDirectory20Api api = OurMicrosoftAzureActiveDirectoryEndpoint.custom(authConfig.tenant());
+		OAuth20Service azureAuthService = getAuthService(api, authConfig);
+		//System.out.println(azureAuthService.getAuthorizationUrl());
+		
+
+		fs = new FileService(azureAuthService, api, httpClient); 
+	}
+	
 	FileService fs = null ;
-	AuthConfig authConfig = null;
 		
 
 	

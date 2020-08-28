@@ -28,17 +28,23 @@ public class FileService {
 	
 	private static final Logger log = LoggerFactory.getLogger(FileService.class);
 
-    private final OAuth20Service authenticationService;
-    private final MicrosoftAzureActiveDirectory20Api api; 
-    private HttpClient httpClient;
-    private String bearerToken = null;
-
     public FileService(OAuth20Service authenticationService, MicrosoftAzureActiveDirectory20Api api)
     {
         this.authenticationService = authenticationService;
         this.api = api;
     }
 
+	public FileService(OAuth20Service authenticationService, MicrosoftAzureActiveDirectory20Api api, HttpClient httpClient) {
+        this.authenticationService = authenticationService;
+        this.api = api;
+		this.httpClient = httpClient;
+	}
+
+    private final OAuth20Service authenticationService;
+    private final MicrosoftAzureActiveDirectory20Api api; 
+    private HttpClient httpClient;
+    private String bearerToken = null;
+	
     private CompletableFuture<HttpClient> getHttpClient() {
     	
     	return CompletableFuture.supplyAsync(new Supplier<HttpClient>() {
@@ -48,9 +54,7 @@ public class FileService {
 
     	        if (httpClient != null) return httpClient;
     	        
-    	    	// Use Scribe's approach to getting an HttpClient
-    	        // See the without-graph-sdk-using-msal4j for an example using scribejava-httpclient-apache
-    	        httpClient = new JDKHttpClient(JDKHttpClientConfig.defaultConfig());
+    	        httpClient = new JDKHttpClient(JDKHttpClientConfig.defaultConfig()); // uses HttpURLConnection, but not async
     	        return httpClient;
     		}
     	});

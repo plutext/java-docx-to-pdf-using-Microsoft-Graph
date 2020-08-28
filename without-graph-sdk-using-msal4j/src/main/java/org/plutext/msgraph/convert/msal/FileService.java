@@ -15,11 +15,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.scribejava.core.httpclient.HttpClient;
+import com.github.scribejava.core.httpclient.jdk.JDKHttpClient;
+import com.github.scribejava.core.httpclient.jdk.JDKHttpClientConfig;
 import com.github.scribejava.core.model.OAuthAsyncRequestCallback;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Verb;
-import com.github.scribejava.httpclient.apache.ApacheHttpClient;
 import com.microsoft.aad.msal4j.ClientCredentialParameters;
 import com.microsoft.aad.msal4j.ConfidentialClientApplication;
 import com.microsoft.aad.msal4j.IAuthenticationResult;
@@ -28,14 +29,19 @@ public class FileService {
 	
 	private static final Logger log = LoggerFactory.getLogger(FileService.class);
 
+    public FileService(ConfidentialClientApplication authenticationService) {
+        this.authenticationService = authenticationService;
+    }
+	
+	public FileService(ConfidentialClientApplication authenticationService, HttpClient httpClient) {
+        this.authenticationService = authenticationService;
+		this.httpClient = httpClient;
+	}
+	
     private final ConfidentialClientApplication authenticationService;
     private HttpClient httpClient;
     private IAuthenticationResult authResult = null;
 
-    public FileService(ConfidentialClientApplication authenticationService)
-    {
-        this.authenticationService = authenticationService;
-    }
 
     private CompletableFuture<HttpClient> getHttpClient() {
     	
@@ -46,9 +52,7 @@ public class FileService {
 
     	        if (httpClient != null) return httpClient;
     	        
-    	    	// Use Scribe's approach to getting an HttpClient        
-//    	        httpClient = new JDKHttpClient(JDKHttpClientConfig.defaultConfig()); // uses HttpURLConnection, but not async
-    	        httpClient = new ApacheHttpClient();
+    	        httpClient = new JDKHttpClient(JDKHttpClientConfig.defaultConfig()); // uses HttpURLConnection, but not async
     	        log.info("Using HTTP client implementation: " + httpClient.getClass().getName() );
     	        return httpClient;
     		}

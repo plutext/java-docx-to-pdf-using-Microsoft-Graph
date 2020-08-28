@@ -8,16 +8,26 @@
 	<version>${revision}</version>
   </parent>
   
-	<artifactId>graph-convert-config</artifactId>
+	<artifactId>graph-convert-base</artifactId>
 	<packaging>${packaging.type}</packaging>
-	<name>graph-convert-config</name>
+	<name>graph-convert-base</name>
 	
 	<description>
-		graph-convert-config
+		graph-convert-base
 	</description>
     
     <dependencies>
-		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.26</version>
+		</dependency>	
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>		 		
+			
     </dependencies>
 
     <build>

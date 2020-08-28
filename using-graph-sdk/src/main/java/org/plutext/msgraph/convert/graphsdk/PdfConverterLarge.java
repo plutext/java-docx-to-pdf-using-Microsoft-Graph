@@ -15,8 +15,7 @@ import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.plutext.msgraph.convert.AuthConfig;
-import org.plutext.msgraph.convert.AuthConfigImpl;
-import org.plutext.msgraph.convert.DocxToPDF;
+import org.plutext.msgraph.convert.DocxToPdfConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,34 +41,17 @@ import com.microsoft.graph.requests.extensions.GraphServiceClient;
  * @author jharrop
  *
  */
-public class PdfConverterLarge  extends DocxToPDF {
+public class PdfConverterLarge  extends DocxToPdfConverter {
+
+	public PdfConverterLarge(AuthConfig authConfig) {
+		super(authConfig);
+	}
+
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfConverterLarge.class);
-	
-	public static void main(String[] args) throws IOException, InterruptedException {
-
-		File inFile = new File(System.getProperty("user.dir")
-				+ "/../sample-docx.docx");
-//				+ "/79_half.docx"); 
-		
-		DocxToPDF converter = new PdfConverterLarge();
-		byte[] pdf = converter.convert(inFile);
-		        
-        File file = new File(System.getProperty("user.dir")
-				+ "/out.pdf");
-
-        FileUtils.writeByteArrayToFile(file, pdf); ;//.copyInputStreamToFile(inputStream, file);
-        System.out.println("saved " + file.getName());
-		
-	}
-		
-		
+			
 
 	public byte[] convert(InputStream fileStream, long streamSize) throws IOException {
-		
-		
-		AuthConfig authConfig = new AuthConfigImpl();
-
 		
     	List<String> scopes = new ArrayList<String>();
     	scopes.add("https://graph.microsoft.com/.default");

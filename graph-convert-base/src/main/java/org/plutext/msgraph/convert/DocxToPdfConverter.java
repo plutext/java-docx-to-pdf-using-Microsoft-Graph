@@ -4,7 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-public abstract class DocxToPDF implements OpenXmlToPDF {
+public abstract class DocxToPdfConverter implements OpenXmlToPDF {
+	
+	public DocxToPdfConverter(AuthConfig authConfig) {
+		 this.authConfig = authConfig;
+	}
+	
+	protected AuthConfig authConfig;
 	
 	public abstract byte[] convert(byte[] docx) throws IOException;  
 	

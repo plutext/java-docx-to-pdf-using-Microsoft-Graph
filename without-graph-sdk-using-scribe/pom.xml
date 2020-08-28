@@ -24,7 +24,7 @@
     
         <dependency>
 			<groupId>org.plutext</groupId>
-			<artifactId>graph-convert-config</artifactId>
+			<artifactId>graph-convert-base</artifactId>
 			<version>${project.version}</version>
 		</dependency>
     

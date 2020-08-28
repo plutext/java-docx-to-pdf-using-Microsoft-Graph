@@ -1,4 +1,6 @@
-package org.plutext.msgraph.convert;
+package samples;
+
+import org.plutext.msgraph.convert.AuthConfig;
 
 /**
  * For what to do here, please see https://medium.com/medialesson/convert-files-to-pdf-using-microsoft-graph-azure-functions-20bc84d2adc4 
