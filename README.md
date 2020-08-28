@@ -21,7 +21,8 @@ Which module works best for you may depend on:
 - whether you are already using and familiar with a particular http library: the without-graph-sdk modules allow you to choose between the http libraries supported by scribe.  Note that the default - JDKHttpClient - is not actually async.  As an example, without-graph-sdk-using-msal4j is setup to use scribejava-httpclient-apache
 - whether you need to handle docx files larger than 4MB
 - whether you want to minimise the size of the dependencies (see the dependency trees at dependency-trees.txt)
-- your sensibilities (using-graph-sdk is the most obscure, but supports big (4MB) files  
+- your sensibilities (using-graph-sdk is the most obscure, but supports big (4MB) files 
+- the using-graph-sdk modules use a -SNAPSHOT preview of microsoft-graph-auth which you may wish to avoid 
 
 Whichever you choose, you configure it in the graph-convert-config module.
 
