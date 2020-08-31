@@ -140,7 +140,6 @@ public class PdfConverter  extends DocxToPdfConverter  {
 			Boolean result = fs.uploadStreamAsync(path, inFile, 
 					"application/vnd.openxmlformats-officedocument.wordprocessingml.document").get();
 			if (result==null || result.booleanValue()==false) {
-				log.error("Upload failed, terminating.");
 				throw new ConversionException("upload failed");
 			}
 			
