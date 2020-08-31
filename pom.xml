@@ -10,10 +10,10 @@
 
 	<groupId>org.plutext.graph-convert</groupId>
 	<artifactId>java-docx-to-pdf-using-Microsoft-Graph-parent</artifactId>	
-	<version>1.0.2-SNAPSHOT</version>
+	<version>${revision}</version>
 	
 	<properties>
-		<revision>1.0.1-SNAPSHOT</revision>
+		<revision>1.0.2-SNAPSHOT</revision>
 		<packaging.type>jar</packaging.type>
 	    <!-- <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
 	    <!-- github server corresponds to entry in ~/.m2/settings.xml -->
