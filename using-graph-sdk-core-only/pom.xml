@@ -37,11 +37,10 @@
             <!-- would pull in graph 1.7.1 but 1.9.0 is better -->
 		</dependency>
 
-		<!-- Currently in preview, hence allow-snapshots profile below  -->        
 		<dependency>
 			<groupId>com.microsoft.graph</groupId>
 			<artifactId>microsoft-graph-auth</artifactId>
-			<version>0.2.0-SNAPSHOT</version>
+			<version>0.2.0</version>
 		</dependency>
 
 	</dependencies>
@@ -60,22 +59,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
             </plugin>
+            
         </plugins>
     </build>
 
-<profiles>
-  <profile>
-     <id>allow-snapshots</id>
-        <activation><activeByDefault>true</activeByDefault></activation>
-     <repositories>
-       <repository>
-         <id>snapshots-repo</id>
-         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-         <releases><enabled>false</enabled></releases>
-         <snapshots><enabled>true</enabled></snapshots>
-       </repository>
-     </repositories>
-   </profile>
-</profiles>
 
 </project>
