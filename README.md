@@ -22,7 +22,6 @@ Which module works best for you may depend on:
 - whether you need to handle docx files larger than 4MB
 - whether you want to minimise the size of the dependencies (see the dependency trees at dependency-trees.txt)
 - your sensibilities (using-graph-sdk is the most obscure, but supports big (4MB) files 
-- the using-graph-sdk modules use a -SNAPSHOT preview of microsoft-graph-auth which you may wish to avoid 
 
 Whichever you choose, look at the graph-convert-sample module; specify your chosen module in the pom there.  
 (Copy the pom and Java source code from this module into your IDE as a new project) 
