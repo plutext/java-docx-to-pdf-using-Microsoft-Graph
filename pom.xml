@@ -8,7 +8,7 @@
     <version>9</version>
   </parent>
 
-	<groupId>org.plutext</groupId>
+	<groupId>org.plutext.graph-convert</groupId>
 	<artifactId>java-docx-to-pdf-using-Microsoft-Graph-parent</artifactId>	
 	<version>${revision}</version>
 	

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
   <parent>
-	<groupId>org.plutext</groupId>
+	<groupId>org.plutext.graph-convert</groupId>
 	<artifactId>java-docx-to-pdf-using-Microsoft-Graph-parent</artifactId>	
 	<version>${revision}</version>
   </parent>
@@ -13,13 +13,13 @@
 	<name>using-graph-sdk</name>
 	
 	<description>
-		using-graph-sdk
+		using-graph-sdk-core-only
 	</description>
 
 	<dependencies>
 
 		<dependency>
-			<groupId>org.plutext</groupId>
+			<groupId>org.plutext.graph-convert</groupId>
 			<artifactId>graph-convert-base</artifactId>
 			<version>${project.version}</version>
 		</dependency>
