@@ -10,7 +10,7 @@
 
 	<groupId>org.plutext</groupId>
 	<artifactId>java-docx-to-pdf-using-Microsoft-Graph-parent</artifactId>	
-	<version>${revision}</version>
+	<version>1.0.0</version>
 	
 	<properties>
 		<revision>1.0.0-SNAPSHOT</revision>
