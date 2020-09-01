@@ -1,8 +1,8 @@
 # java-docx-to-pdf-using-Microsoft-Graph
 
-This project shows you how to use Microsoft's Graph for docx to PDF conversion from Java.
+This project shows you how to use Microsoft's Graph for OpenXML (docx/pptx/xlsx) to PDF conversion from Java.
 
-(Similar code would work to convert doc or rtf to docx, or for pptx to pdf etc)
+(Similar code would work to convert doc or rtf to docx, or for binary .ppt or .xls to pdf etc)
 
 Different combinations of libraries can be used to do this, and the purpose of this
 project is to make it easier for you to assess your options.     
@@ -30,6 +30,7 @@ Before you start, you'll need to set some stuff up in Microsoft's cloud.  I foll
 
 - https://docs.microsoft.com/en-us/graph/tutorials/java
 - https://docs.microsoft.com/en-us/graph/auth-register-app-v2
+- https://devzigma.com/java/upload-files-to-sharepoint-using-java/
 
 This info you then setup in the graph-convert-sample module's AuthConfigImpl.
 
@@ -40,5 +41,5 @@ Notes/caveats:
 1.  Refreshing a token which is nearing expiry is a TODO.
 2.  There is a 4MB upload limit.  This is currently only circumvented in the using-graph-sdk sub-project
 (though it ought to be possible to do in some of the other modules; PR welcome)
-3.  There doesn't seem to be a way to update a TOC (either page numbers or entries).  Vote for this enhancement at https://microsoftgraph.uservoice.com/forums/920506-microsoft-graph-feature-requests/suggestions/41235295-docx-to-pdf-file-conversion-update-table-of-conte 
+3.  For doc/docx, there doesn't seem to be a way to update a TOC (either page numbers or entries).  Vote for this enhancement at https://microsoftgraph.uservoice.com/forums/920506-microsoft-graph-feature-requests/suggestions/41235295-docx-to-pdf-file-conversion-update-table-of-conte 
 

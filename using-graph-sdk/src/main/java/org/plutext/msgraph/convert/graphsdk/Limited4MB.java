@@ -32,6 +32,8 @@ import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.plutext.msgraph.convert.DocxToPdfConverter;
+import org.plutext.msgraph.convert.OpenXmlToPDF;
+import org.plutext.msgraph.convert.AbstractOpenXmlToPDF;
 import org.plutext.msgraph.convert.AuthConfig;
 import org.plutext.msgraph.convert.ConversionException;
 import org.slf4j.Logger;
@@ -56,17 +58,16 @@ import com.microsoft.graph.requests.extensions.GraphServiceClient;
  * @author jharrop
  *
  */
-public class Limited4MB extends DocxToPdfConverter {
+public class Limited4MB extends AbstractOpenXmlToPDF {
 
 	public Limited4MB(AuthConfig authConfig) {
 		super(authConfig);
 	}
 
 	private static final Logger log = LoggerFactory.getLogger(Limited4MB.class);
-		
-	
+			
 	@Override
-	public byte[] convert(byte[] docx) throws ConversionException {
+	public byte[] convert(byte[] bytes, String ext) throws ConversionException {
 		
 		
     	List<String> scopes = new ArrayList<String>();
@@ -84,7 +85,7 @@ public class Limited4MB extends DocxToPdfConverter {
 		// path = "https://graph.microsoft.com/v1.0/sites/" + siteId + "/drive/items/";
 		
 		
-        String tmpFileName = UUID.randomUUID()+ ".docx"; // TODO dotx/dotm etc
+        String tmpFileName = UUID.randomUUID().toString() + ".docx"; // an extension is required  
         
 //        String requestUrl = path +"root:/" + tmpFileName + ":/content";		
 		String convertPathPrefix = "/sites/" + authConfig.site() + "/drive/items/";
@@ -94,7 +95,7 @@ public class Limited4MB extends DocxToPdfConverter {
         // Note the obscure code
 		MyCallback myCallback = new MyCallback(graphClient, convertPathPrefix, authConfig.site(), item);
 		graphClient.sites(authConfig.site()).drive().items(item).content().buildRequest()
-		.put(docx, myCallback );
+		.put(bytes, myCallback );
 		
 		// wait
 		try {
@@ -106,16 +107,18 @@ public class Limited4MB extends DocxToPdfConverter {
 		
 	}
 
-	@Override
 	public byte[] convert(File docx) throws ConversionException, IOException {
 		
-		return convert( FileUtils.readFileToByteArray(docx));
+		String filename = docx.getName();
+		String ext = filename.substring(filename.lastIndexOf("."));
+		
+		return convert( FileUtils.readFileToByteArray(docx), ext);
 	}
 
 	@Override
-	public byte[] convert(InputStream docx) throws ConversionException, IOException {
+	public byte[] convert(InputStream docx, String ext) throws ConversionException, IOException {
 		
-		return convert( IOUtils.toByteArray(docx) );
+		return convert( IOUtils.toByteArray(docx), ext );
 	}	
 	
 	static class MyCallback implements ICallback<DriveItem> {
@@ -138,7 +141,7 @@ public class Limited4MB extends DocxToPdfConverter {
 		
 		@Override
 		public void success(DriveItem result) {
-
+			
 			System.out.println("it worked!");
 			System.out.println(result.size);
 			

@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.plutext.msgraph.convert.DocxToPdfConverter;
+import org.plutext.msgraph.convert.AbstractOpenXmlToPDF;
 import org.plutext.msgraph.convert.AuthConfig;
 import org.plutext.msgraph.convert.ConversionException;
 import org.slf4j.Logger;
@@ -39,7 +40,6 @@ import com.microsoft.graph.httpcore.HttpClients;
 import com.microsoft.graph.models.extensions.IGraphServiceClient;
 import com.microsoft.graph.requests.extensions.GraphServiceClient;
 
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -53,7 +53,7 @@ import okhttp3.Response;
  * @author jharrop
  *
  */
-public class PdfConverterCore  extends DocxToPdfConverter {
+public abstract class PdfConverterCore  extends AbstractOpenXmlToPDF {
 
 	public PdfConverterCore(AuthConfig authConfig) {
 		super(authConfig);
@@ -63,38 +63,13 @@ public class PdfConverterCore  extends DocxToPdfConverter {
 	
 
 	@Override
-	public byte[] convert(File inFile) throws ConversionException, IOException {
+	public byte[] convert(InputStream docx, String ext) throws ConversionException, IOException {
 		
-		MediaType mt = MediaType.parse("application/vnd.openxmlformats-officedocument.wordprocessingml.document; charset=utf-8");
-		// can create RequestBody from byte[] or FIle
-		RequestBody body = RequestBody.create(mt, inFile);
-		return convert(body);
-		
-	}
-
-	@Override
-	public byte[] convert(InputStream docx) throws ConversionException, IOException {
-		
-		return convert( IOUtils.toByteArray(docx) );
+		// RequestBody can't handle an input stream directly
+		return convert( IOUtils.toByteArray(docx), ext );
 	}	
 	
 	
-	@Override
-	public byte[] convert(byte[] docx) throws ConversionException { 
-
-		MediaType mt = MediaType.parse("application/vnd.openxmlformats-officedocument.wordprocessingml.document; charset=utf-8");
-		
-		RequestBody body = RequestBody.create(mt, docx);
-		try {
-			return convert(body);
-		} catch (ConversionException e) {
-			throw e;
-		} catch (IOException e) {
-			throw new ConversionException(e.getMessage(), e);
-		}
-		
-}
-
 	/**
 	 * We can create RequestBody from byte[] or File
 	 * @param body

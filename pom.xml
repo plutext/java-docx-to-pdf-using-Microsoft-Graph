@@ -9,7 +9,7 @@
   </parent>
 
 	<groupId>org.plutext.graph-convert</groupId>
-	<artifactId>java-docx-to-pdf-using-Microsoft-Graph-parent</artifactId>	
+	<artifactId>office-to-pdf-using-Microsoft-Graph</artifactId>	
 	<version>${revision}</version>
 	
 	<properties>
@@ -22,7 +22,7 @@
 
     <packaging>pom</packaging>
 
-    <name>java-docx-to-pdf-using-Microsoft-Graph parent</name>
+    <name>office-to-pdf-using-Microsoft-Graph</name>
     
     <modules>
         <module>graph-convert-base</module>
@@ -34,7 +34,7 @@
     </modules>
 	
 	<description>
-		Demonstrate various approaches to using Microsoft Graph for docx to PDF conversion in Java.
+		Demonstrate various approaches to using Microsoft Graph for OpenXML (docx/pptx/xlsx) to PDF conversion in Java.
 	</description>
 	<url>https://github.com/plutext/java-docx-to-pdf-using-Microsoft-Graph</url>
 	<licenses>

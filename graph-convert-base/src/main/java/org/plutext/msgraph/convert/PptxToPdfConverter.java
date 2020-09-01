@@ -22,24 +22,26 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * The Microsoft Graph API supports conversion to PDF only.
- * 
- * It relies on the filename extension (eg .docx) for conversion;
- * you'll get an error if the uploaded file has no extension.
- * 
- * So our interface uses the file extension, rather than
- * mime type or content type.
- * 
- * @author jharrop
- *
- */
-public interface OpenXmlToPDF {
-
-	public abstract byte[] convert(byte[] bytes, String ext) throws ConversionException;  
+public interface PptxToPdfConverter {
 	
-//	public abstract byte[] convert(File docx) throws ConversionException, IOException;  
+	public abstract byte[] convert(byte[] docx) throws ConversionException;  
+	
+	/**
+	 * Assume extension ".pptx"
+	 * @param docx
+	 * @return
+	 * @throws ConversionException
+	 * @throws IOException
+	 */
+	/**
+	 * Assume extension ".pptx"
+	 * @param docx
+	 * @return
+	 * @throws ConversionException
+	 * @throws IOException
+	 */
+	public abstract byte[] convert(InputStream pptx) throws ConversionException, IOException;  
 
-	public abstract byte[] convert(InputStream is, String ext) throws ConversionException, IOException;  
+	public abstract byte[] convert(File pptx) throws ConversionException, IOException;  
 	
 }

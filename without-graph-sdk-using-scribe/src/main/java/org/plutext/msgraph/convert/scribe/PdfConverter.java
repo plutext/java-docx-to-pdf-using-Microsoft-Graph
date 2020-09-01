@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.io.IOUtils;
 import org.plutext.msgraph.convert.DocxToPdfConverter;
+import org.plutext.msgraph.convert.AbstractOpenXmlToPDF;
 import org.plutext.msgraph.convert.AuthConfig;
 import org.plutext.msgraph.convert.ConversionException;
 import org.plutext.msgraph.convert.scribe.adaption.OurMicrosoftAzureActiveDirectoryEndpoint;
@@ -46,7 +47,7 @@ import com.github.scribejava.core.oauth.OAuth20Service;
  * @author jharrop
  *
  */
-public class PdfConverter  extends DocxToPdfConverter  {
+public abstract class PdfConverter  extends AbstractOpenXmlToPDF  {
 	
 	private static final Logger log = LoggerFactory.getLogger(PdfConverter.class);
 	
@@ -91,8 +92,7 @@ public class PdfConverter  extends DocxToPdfConverter  {
 		
 
 	
-	@Override
-	public byte[] convert(byte[] docx) throws ConversionException {
+	public byte[] convertMime(byte[] docx, String mimetype) throws ConversionException {
 		try {
 			
 			// Upload the file
@@ -101,8 +101,7 @@ public class PdfConverter  extends DocxToPdfConverter  {
 			String item =  "root:/" + tmpFileName +":";	
 			String path = "https://graph.microsoft.com/v1.0/sites/" + authConfig.site() + "/drive/items/" + item + "/content";
 			
-			Boolean result = fs.uploadStreamAsync(path, docx, 
-					"application/vnd.openxmlformats-officedocument.wordprocessingml.document").get();
+			Boolean result = fs.uploadStreamAsync(path, docx, mimetype).get();
 //			System.out.println(fileId);
 			if (result==null || result.booleanValue()==false) {
 				throw new ConversionException("upload failed");
@@ -124,17 +123,11 @@ public class PdfConverter  extends DocxToPdfConverter  {
 		
 	}
 	
-	@Override
-	public byte[] convert(InputStream docx) throws ConversionException, IOException {
-		return convert( IOUtils.toByteArray(docx) );
-	}	
-	
 	
 	/**
 	 * Note that JDKHttpClient does not support File payload
 	 */
-	@Override
-	public byte[] convert(File inFile) throws ConversionException, IOException {
+	public byte[] convertMime(File inFile, String mimetype) throws ConversionException, IOException {
 
 		try {
 			
@@ -146,8 +139,7 @@ public class PdfConverter  extends DocxToPdfConverter  {
 			
 			
 			// Upload the file
-			Boolean result = fs.uploadStreamAsync(path, inFile, 
-					"application/vnd.openxmlformats-officedocument.wordprocessingml.document").get();
+			Boolean result = fs.uploadStreamAsync(path, inFile, mimetype).get();
 			if (result==null || result.booleanValue()==false) {
 				throw new ConversionException("upload failed");
 			}
@@ -168,6 +160,10 @@ public class PdfConverter  extends DocxToPdfConverter  {
 	}
 	
 	
+	@Override
+	public byte[] convert(InputStream docx, String ext) throws ConversionException, IOException {
+		return convert( IOUtils.toByteArray(docx), ext );
+	}
 	
 	
 	private OAuth20Service getAuthService(MicrosoftAzureActiveDirectory20Api api,

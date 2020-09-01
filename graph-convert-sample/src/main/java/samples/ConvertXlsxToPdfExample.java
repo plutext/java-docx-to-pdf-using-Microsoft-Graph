@@ -5,26 +5,25 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.plutext.msgraph.convert.ConversionException;
-import org.plutext.msgraph.convert.DocxToPdfConverter;
-import org.plutext.msgraph.convert.graphsdk.DocxToPdfConverterLarge;
+import org.plutext.msgraph.convert.XlsxToPdfConverter;
+import org.plutext.msgraph.convert.graphsdk.XlsxToPdfConverterLarge;
 
 //import com.github.scribejava.httpclient.apache.ApacheHttpClient;
 
-public class ConvertDocxToPdfExample {
+public class ConvertXlsxToPdfExample {
 
 	public static void main(String[] args) throws IOException, ConversionException {
 
 		File inFile = new File(System.getProperty("user.dir")
-				+ "/sample-docs/sample-docx.docx");
+				+ "/sample-docs/test.xlsx");
 		
 		// Choose your converter implementation here, corresponding to the module you've uncommented in your pom
-		DocxToPdfConverter converter = new DocxToPdfConverterLarge(new AuthConfigImpl());
-//		DocxToPdfConverter converter = new Limited4MBDocxToPDF(new AuthConfigImpl());
+		XlsxToPdfConverter converter = new XlsxToPdfConverterLarge(new AuthConfigImpl());
 		
 		// If you choose without-graph-sdk-using-scribe, you can optionally specify your preferred httpclient
 		// (uncommented in your pom)
 //        httpClient = new ApacheHttpClient();
-//		DocxToPdfConverter converter = new PdfConverterLarge(new AuthConfigImpl(), httpClient);
+//		XlsxToPdfConverter converter = new XlsxToPdfConverterLarge(new AuthConfigImpl(), httpClient);
 
 		byte[] pdfBytes = converter.convert(inFile);
 		

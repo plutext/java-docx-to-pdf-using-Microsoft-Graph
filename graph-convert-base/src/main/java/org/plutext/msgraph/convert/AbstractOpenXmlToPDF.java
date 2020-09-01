@@ -18,30 +18,12 @@
 
 package org.plutext.msgraph.convert;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-public interface DocxToPdfConverter {
+public abstract class AbstractOpenXmlToPDF implements OpenXmlToPDF {
 	
-	public abstract byte[] convert(byte[] docx) throws ConversionException;  
+	public AbstractOpenXmlToPDF(AuthConfig authConfig) {
+		 this.authConfig = authConfig;
+	}
 	
-	/**
-	 * Assume extension ".docx"
-	 * @param docx
-	 * @return
-	 * @throws ConversionException
-	 * @throws IOException
-	 */
-	/**
-	 * Assume extension ".docx"
-	 * @param docx
-	 * @return
-	 * @throws ConversionException
-	 * @throws IOException
-	 */
-	public abstract byte[] convert(InputStream docx) throws ConversionException, IOException;  
-
-	public abstract byte[] convert(File docx) throws ConversionException, IOException;  
+	protected AuthConfig authConfig;
 	
 }

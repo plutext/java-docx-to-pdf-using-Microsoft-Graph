@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.plutext.msgraph.convert.AbstractOpenXmlToPDF;
 import org.plutext.msgraph.convert.AuthConfig;
 import org.plutext.msgraph.convert.ConversionException;
 import org.plutext.msgraph.convert.DocxToPdfConverter;
@@ -60,7 +61,7 @@ import com.microsoft.graph.requests.extensions.GraphServiceClient;
  * @author jharrop
  *
  */
-public class PdfConverterLarge  extends DocxToPdfConverter {
+public class PdfConverterLarge  extends AbstractOpenXmlToPDF {
 
 	public PdfConverterLarge(AuthConfig authConfig) {
 		super(authConfig);
@@ -70,7 +71,7 @@ public class PdfConverterLarge  extends DocxToPdfConverter {
 	private static final Logger log = LoggerFactory.getLogger(PdfConverterLarge.class);
 			
 
-	public byte[] convert(InputStream fileStream, long streamSize) throws ConversionException, IOException {
+	public byte[] convert(InputStream fileStream, long streamSize, String ext) throws ConversionException, IOException {
 		
     	List<String> scopes = new ArrayList<String>();
     	scopes.add("https://graph.microsoft.com/.default");
@@ -87,7 +88,7 @@ public class PdfConverterLarge  extends DocxToPdfConverter {
 		// path = "https://graph.microsoft.com/v1.0/sites/" + siteId + "/drive/items/";
 		
 		
-        String tmpFileName = UUID.randomUUID()+ ".docx"; // TODO dotx/dotm etc
+        String tmpFileName = UUID.randomUUID().toString() + ext;
         
 //        String requestUrl = path +"root:/" + tmpFileName + ":/content";		
 		String convertPathPrefix = "/sites/" + authConfig.site() + "/drive/items/";
@@ -131,27 +132,30 @@ public class PdfConverterLarge  extends DocxToPdfConverter {
 	
 
 	@Override
-	public byte[] convert(byte[] docx) throws ConversionException {
+	public byte[] convert(byte[] docx, String ext) throws ConversionException {
 		
 		InputStream fileStream = new ByteArrayInputStream(docx);
 
 		try {
-			return convert( fileStream,  docx.length);
+			return convert( fileStream,  docx.length, ext);
 		} catch (IOException e) {
 			throw new ConversionException(e.getMessage(), e);
 		}
 		
 	}
 
-	@Override
 	public byte[] convert(File docx) throws ConversionException, IOException {
-		return convert( FileUtils.readFileToByteArray(docx));
+		
+		String filename = docx.getName();
+		String ext = filename.substring(filename.lastIndexOf("."));
+		
+		return convert( FileUtils.readFileToByteArray(docx), ext);
 	}
 	
 	@Override
-	public byte[] convert(InputStream docx) throws ConversionException, IOException {
+	public byte[] convert(InputStream docx, String ext) throws ConversionException, IOException {
 		// inefficient, but we need length
-		return convert( IOUtils.toByteArray(docx) );
+		return convert( IOUtils.toByteArray(docx), ext );
 	}	
 	
 	
