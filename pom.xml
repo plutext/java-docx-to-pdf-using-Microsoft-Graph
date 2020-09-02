@@ -10,7 +10,7 @@
 
 	<groupId>org.plutext.graph-convert</groupId>
 	<artifactId>office-to-pdf-using-Microsoft-Graph</artifactId>	
-	<version>1.0.2</version>
+	<version>1.0.3-SNAPSHOT</version>
 	
 	<properties>
 		<revision>1.0.2-SNAPSHOT</revision>
