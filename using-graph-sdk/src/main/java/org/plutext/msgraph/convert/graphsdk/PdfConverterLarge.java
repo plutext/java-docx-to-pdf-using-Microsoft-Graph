@@ -224,7 +224,7 @@ public class PdfConverterLarge  extends AbstractOpenXmlToPDF {
 
 
 	    public void failure(final ClientException ex) {
-	        System.out.println(
+	        log.error(
 	            String.format("Error uploading file: %s", ex.getMessage())
 	        );
 	    }

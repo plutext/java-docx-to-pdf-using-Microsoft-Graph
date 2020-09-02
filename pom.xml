@@ -31,6 +31,7 @@
         <module>using-graph-sdk-core-only</module>
         <module>using-graph-sdk</module>
         <module>graph-convert-sample</module>
+        <module>graph-convert-tests</module>
     </modules>
 	
 	<description>

@@ -141,10 +141,7 @@ public class Limited4MB extends AbstractOpenXmlToPDF {
 		
 		@Override
 		public void success(DriveItem result) {
-			
-			System.out.println("it worked!");
-			System.out.println(result.size);
-			
+						
 //			Option format = new PdfOption("format", "pdf");
 //			List<Option> requestOptions = new ArrayList<Option>();
 //			requestOptions.add(format);

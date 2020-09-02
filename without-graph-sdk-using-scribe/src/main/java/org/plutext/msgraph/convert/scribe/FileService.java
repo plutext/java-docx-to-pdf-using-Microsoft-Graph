@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.plutext.msgraph.convert.scribe.adaption.OurOAuth20ServiceBridge;
 import org.slf4j.Logger;
@@ -95,7 +96,7 @@ public class FileService {
 					throw new RuntimeException(e);
 				}
     	        bearerToken = accessToken.getAccessToken();
-    	        System.out.println(bearerToken);
+//    	        log.debug(bearerToken);
     	        return bearerToken;
     		}
     	});
@@ -119,10 +120,17 @@ public class FileService {
         		
     }
 
-    public Future<Boolean> uploadStreamAsync(String requestUrl, File bodyContents, String contentType) throws InterruptedException, ExecutionException {
-    	
+    public Future<Boolean> uploadStreamAsync(String requestUrl, File bodyContents, String contentType) throws InterruptedException, ExecutionException, IOException {
+    	    	
     	HttpClient client = getHttpClient().get();
-                
+    	log.debug(client.getClass().getName());
+        if (client.getClass().getName().equals("com.github.scribejava.core.httpclient.jdk.JDKHttpClient")) {
+        	//java.lang.UnsupportedOperationException: JDKHttpClient does not support File payload for the moment
+        	log.debug( client.getClass().getName() + "does not support File payload; reading byte[] " ); 
+    		byte[] docxBytes = FileUtils.readFileToByteArray(bodyContents);
+    		return uploadStreamAsync(requestUrl, docxBytes, contentType);
+        }
+    	
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("ContentType",  contentType);
         headers.put("Authorization",  "Bearer " + getBearerToken().get() );
@@ -130,6 +138,7 @@ public class FileService {
         headers.put("Accept",  "application/json;odata.metadata=minimal");
         
         log.debug(requestUrl);
+        
         return client.executeAsync("ScribeJava", headers, Verb.PUT, requestUrl, bodyContents, 
         		new UploadOAuthAsyncRequestCallback(), new UploadResponseConverter() );
         		
@@ -208,7 +217,7 @@ public class FileService {
 	class DownloadResponseConverter implements OAuthRequest.ResponseConverter<byte[]> {
 		
 		public byte[] convert(Response response) throws IOException {
-	        log.debug("received response for upload");
+	        log.debug("received response for download: " + response.getCode());
 	        byte[] bytes = IOUtils.toByteArray(response.getStream());
 	        response.close();
 	        return bytes;

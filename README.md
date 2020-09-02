@@ -1,4 +1,4 @@
-# java-docx-to-pdf-using-Microsoft-Graph
+# office-to-pdf-using-Microsoft-Graph
 
 This project shows you how to use Microsoft's Graph for OpenXML (docx/pptx/xlsx) to PDF conversion from Java.
 
@@ -42,4 +42,4 @@ Notes/caveats:
 2.  There is a 4MB upload limit.  This is currently only circumvented in the using-graph-sdk sub-project
 (though it ought to be possible to do in some of the other modules; PR welcome)
 3.  For doc/docx, there doesn't seem to be a way to update a TOC (either page numbers or entries).  Vote for this enhancement at https://microsoftgraph.uservoice.com/forums/920506-microsoft-graph-feature-requests/suggestions/41235295-docx-to-pdf-file-conversion-update-table-of-conte 
-
+4.  Scribe can use a variety of http clients, the default, apache, and OkHttp work.  The others (ning, async http client and armeria, need to be configured to follow redirect, and thoe are TODOs)

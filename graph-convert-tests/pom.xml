@@ -10,25 +10,24 @@
 	<version>${revision}</version>
   </parent>
   
-	<artifactId>graph-convert-sample</artifactId>
+	<artifactId>graph-convert-tests</artifactId>
 	<packaging>${packaging.type}</packaging>
-	<name>graph-convert-sample</name>
+	<name>graph-convert-tests</name>
 	
 	<description>
-		graph-convert-sample
+		graph-convert-tests
 	</description>
 
 
 	<dependencies>
 
-		<!--  choose ONE only of the 4 following implementations -->
+		<!--  in this test module, we use ALL 4  implementations -->
 		<dependency>
 			<groupId>org.plutext.graph-convert</groupId>
 			<artifactId>using-graph-sdk</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
-<!-- 
 		<dependency>
 			<groupId>org.plutext.graph-convert</groupId>
 			<artifactId>using-graph-sdk-core-only</artifactId>
@@ -47,21 +46,50 @@
 			<artifactId>without-graph-sdk-using-scribe</artifactId>
 			<version>${project.version}</version>
 		</dependency>
- -->
- <!-- 
-		<dependency>
+
+ 		<dependency>
 			<groupId>com.github.scribejava</groupId>
 			<artifactId>scribejava-httpclient-apache</artifactId>
 			<version>7.0.0</version>
 		</dependency>
- -->		
-		<!--  if you choose without-graph-sdk-using-scribe, you can optionally also specify your preferred httpclient -->
-
+ 		<dependency>
+			<groupId>com.github.scribejava</groupId>
+			<artifactId>scribejava-httpclient-okhttp</artifactId>
+			<version>7.0.0</version>
+		</dependency>
+ 
+<!-- TODO these clients need to be configured to follow 302 redirect
+ 		<dependency>
+			<groupId>com.github.scribejava</groupId>
+			<artifactId>scribejava-httpclient-ahc</artifactId>
+			<version>7.0.0</version>
+		</dependency>
+ 		<dependency>
+			<groupId>com.github.scribejava</groupId>
+			<artifactId>scribejava-httpclient-ning</artifactId>
+			<version>7.0.0</version>
+		</dependency>
+ 		<dependency>
+			<groupId>com.github.scribejava</groupId>
+			<artifactId>scribejava-httpclient-armeria</artifactId>
+			<version>7.0.0</version>
+		</dependency>
+  -->
+  
+  
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>1.2.3</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>		
+		
 
 	</dependencies>
 

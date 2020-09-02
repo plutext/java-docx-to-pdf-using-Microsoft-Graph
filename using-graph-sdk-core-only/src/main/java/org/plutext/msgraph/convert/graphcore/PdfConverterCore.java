@@ -76,7 +76,7 @@ public abstract class PdfConverterCore  extends AbstractOpenXmlToPDF {
 	 * @return
 	 * @throws IOException 
 	 */
-	public byte[] convert(RequestBody body) throws ConversionException, IOException {
+	public byte[] convert(RequestBody body, String ext) throws ConversionException, IOException {
 		
     	List<String> scopes = new ArrayList<String>();
     	scopes.add("https://graph.microsoft.com/.default");
@@ -90,7 +90,7 @@ public abstract class PdfConverterCore  extends AbstractOpenXmlToPDF {
 						.authenticationProvider(authProvider)
 						.buildClient();
 
-        String tmpFileName = UUID.randomUUID()+ ".docx"; // TODO dotx/dotm etc
+        String tmpFileName = UUID.randomUUID()+ ext; 
 		String item =  "root:/" + tmpFileName +":";	
 		String path = "https://graph.microsoft.com/v1.0/sites/" + authConfig.site() + "/drive/items/" + item + "/content";
 		

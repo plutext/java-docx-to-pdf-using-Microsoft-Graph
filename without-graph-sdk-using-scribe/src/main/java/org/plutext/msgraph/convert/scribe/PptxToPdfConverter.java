@@ -8,13 +8,17 @@ import org.apache.commons.io.IOUtils;
 import org.plutext.msgraph.convert.AuthConfig;
 import org.plutext.msgraph.convert.ConversionException;
 
+import com.github.scribejava.core.httpclient.HttpClient;
+
 public class PptxToPdfConverter extends PdfConverter implements org.plutext.msgraph.convert.PptxToPdfConverter {
 
 	public PptxToPdfConverter(AuthConfig authConfig) throws ConversionException {
 		super(authConfig);
 	}
 
-	private static final String PPTX_MIME_TYPE = "application/vnd.openxmlformats-officedocument.presentationml.presentation"; 
+	public PptxToPdfConverter(AuthConfig authConfig, HttpClient httpClient) throws ConversionException {
+		super(authConfig, httpClient);
+	}
 	
 	
 	@Override

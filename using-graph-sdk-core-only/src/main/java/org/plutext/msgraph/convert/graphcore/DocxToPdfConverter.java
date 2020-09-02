@@ -17,7 +17,6 @@ public class DocxToPdfConverter extends PdfConverterCore implements org.plutext.
 		super(authConfig);
 	}
 
-	private static final String DOCX_MEDIA_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document; charset=utf-8"; 
 
 	@Override
 	public byte[] convert(InputStream docx) throws ConversionException, IOException {
@@ -26,31 +25,29 @@ public class DocxToPdfConverter extends PdfConverterCore implements org.plutext.
 	
 	public byte[] convert(File inFile) throws ConversionException, IOException {
 	
-		// TODO: do we care if its a docm, dotx etc?
-//	String filename = inFile.getName();
-//	String ext = filename.substring(filename.lastIndexOf("."));
-			
-	MediaType mt = MediaType.parse(DOCX_MEDIA_TYPE);
-	// can create RequestBody from byte[] or FIle
-	RequestBody body = RequestBody.create(mt, inFile);
-	return super.convert(body);
-	
-}
+		String filename = inFile.getName();
+		String ext = filename.substring(filename.lastIndexOf("."));
+				
+		MediaType mt = MediaType.parse(DOCX_MEDIA_TYPE);
+		// can create RequestBody from byte[] or FIle
+		RequestBody body = RequestBody.create(mt, inFile);
+		return super.convert(body, ext);
+		
+	}
 
 	@Override
 	public byte[] convert(byte[] docx) throws ConversionException {
-		return convert(docx, null);  // don't care about extension
+		return convert(docx, ".docx");  
 	}
 
 	@Override
 	public byte[] convert(byte[] docx, String ext) throws ConversionException { 
 
 		MediaType mt = MediaType.parse(DOCX_MEDIA_TYPE);
-		// TODO: do we care if its a docm, dotx etc?
 		
 		RequestBody body = RequestBody.create(mt, docx);
 		try {
-			return convert(body);
+			return convert(body, ext);
 		} catch (ConversionException e) {
 			throw e;
 		} catch (IOException e) {

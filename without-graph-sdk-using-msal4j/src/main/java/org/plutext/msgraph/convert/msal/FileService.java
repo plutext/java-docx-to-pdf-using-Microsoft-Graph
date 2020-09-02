@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +96,7 @@ public class FileService {
     public Future<Boolean> uploadStreamAsync(String requestUrl, byte[] bodyContents, String contentType) throws InterruptedException, ExecutionException {
     	
     	HttpClient client = getHttpClient().get();
+    	
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("ContentType",  contentType);
@@ -115,9 +117,16 @@ public class FileService {
         		
     }
 
-    public Future<Boolean> uploadStreamAsync(String requestUrl, File bodyContents, String contentType) throws InterruptedException, ExecutionException {
+    public Future<Boolean> uploadStreamAsync(String requestUrl, File bodyContents, String contentType) throws InterruptedException, ExecutionException, IOException {
     	
     	HttpClient client = getHttpClient().get();
+    	log.debug(client.getClass().getName());
+        if (client.getClass().getName().equals("com.github.scribejava.core.httpclient.jdk.JDKHttpClient")) {
+        	//java.lang.UnsupportedOperationException: JDKHttpClient does not support File payload for the moment
+        	log.debug( client.getClass().getName() + "does not support File payload; reading byte[] " ); 
+    		byte[] docxBytes = FileUtils.readFileToByteArray(bodyContents);
+    		return uploadStreamAsync(requestUrl, docxBytes, contentType);
+        }
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("ContentType",  contentType);
@@ -228,7 +237,7 @@ public class FileService {
 //        headers.put("Accept",  "application/json;odata.metadata=minimal");
         
 		log.debug(requestUrl);
-		byte[] nullBytes = null;
+		byte[] nullBytes = new byte[0];
 		return client.executeAsync("ScribeJava", headers, Verb.DELETE, requestUrl, nullBytes, null,
 				new DeleteResponseConverter());
         		

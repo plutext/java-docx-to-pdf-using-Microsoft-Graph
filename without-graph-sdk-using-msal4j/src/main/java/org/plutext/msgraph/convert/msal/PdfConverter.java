@@ -89,7 +89,7 @@ public abstract class PdfConverter  extends AbstractOpenXmlToPDF  {
 			
 			// Upload the file
 			// Let's work with a known filename.  This way we can ignore the returned itemid (which we need JSON parsing to read)
-	        String tmpFileName = UUID.randomUUID()+ ".docx"; // TODO dotx/dotm etc
+	        String tmpFileName = UUID.randomUUID()+ mimeTypeToExt(mimetype); 
 			String item =  "root:/" + tmpFileName +":";	
 			String path = "https://graph.microsoft.com/v1.0/sites/" + authConfig.site() + "/drive/items/" + item + "/content";
 			
@@ -122,7 +122,7 @@ public abstract class PdfConverter  extends AbstractOpenXmlToPDF  {
 			
 			// Upload the file
 			// Let's work with a known filename.  This way we can ignore the returned itemid (which we need JSON parsing to read)
-	        String tmpFileName = UUID.randomUUID()+ ".docx"; // TODO dotx/dotm etc
+	        String tmpFileName = UUID.randomUUID()+mimeTypeToExt(mimetype); 
 			String item =  "root:/" + tmpFileName +":";	
 			String path = "https://graph.microsoft.com/v1.0/sites/" + authConfig.site() + "/drive/items/" + item + "/content";
 			
@@ -148,6 +148,8 @@ public abstract class PdfConverter  extends AbstractOpenXmlToPDF  {
 			throw new ConversionException(e.getMessage(), e);			
 		}
 	}
+	
+	
 
 	@Override
 	public byte[] convert(InputStream docx, String ext) throws ConversionException, IOException {
