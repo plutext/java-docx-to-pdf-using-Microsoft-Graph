@@ -10,10 +10,10 @@
 
 	<groupId>org.plutext.graph-convert</groupId>
 	<artifactId>office-to-pdf-using-Microsoft-Graph</artifactId>	
-	<version>1.0.3-SNAPSHOT</version>
+	<version>${revision}</version>
 	
 	<properties>
-		<revision>1.0.2-SNAPSHOT</revision>
+		<revision>1.0.3-SNAPSHOT</revision>
 		<packaging.type>jar</packaging.type>
 	    <!-- <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
 	    <!-- github server corresponds to entry in ~/.m2/settings.xml -->
@@ -31,7 +31,7 @@
         <module>using-graph-sdk-core-only</module>
         <module>using-graph-sdk</module>
         <module>graph-convert-sample</module>
-        <module>graph-convert-tests</module>
+        <!--<module>graph-convert-tests</module>-->
     </modules>
 	
 	<description>
