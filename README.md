@@ -13,9 +13,37 @@ The dimensions include:
   - choice of authentication library (MSAL4J, or scribe)
   - choice of http library (scribe offers this, and we can use with MSAL4J as well) 
 
-Each permutation is in its own module (aka sub-project).
+Each permutation is in its own module (aka sub-project), and available in Maven Central, https://search.maven.org/search?q=graph-convert Choose ONE of:
 
-Once you have chosen which module to use, you can incorporate it in your project. Note: the code is intended for ease of understanding; it is not necessarily production ready.  We're happy to accept PRs which improve it.
+```
+
+<dependency>
+  <groupId>org.plutext.graph-convert</groupId>
+  <artifactId>using-graph-sdk</artifactId>
+  <version>1.0.3</version>
+</dependency>
+
+<dependency>
+  <groupId>org.plutext.graph-convert</groupId>
+  <artifactId>using-graph-sdk-core-only</artifactId>
+  <version>1.0.3</version>
+</dependency>
+
+<dependency>
+  <groupId>org.plutext.graph-convert</groupId>
+  <artifactId>without-graph-sdk-using-msal4j</artifactId>
+  <version>1.0.3</version>
+</dependency>
+
+<dependency>
+  <groupId>org.plutext.graph-convert</groupId>
+  <artifactId>without-graph-sdk-using-scribe</artifactId>
+  <version>1.0.3</version>
+</dependency>
+
+```
+
+
 
 Which module works best for you may depend on:
 - whether you are already using and familiar with a particular http library: the without-graph-sdk modules allow you to choose between the http libraries supported by scribe.  Note that the default - JDKHttpClient - is not actually async.  As an example, without-graph-sdk-using-msal4j is setup to use scribejava-httpclient-apache
@@ -23,7 +51,7 @@ Which module works best for you may depend on:
 - whether you want to minimise the size of the dependencies (see the dependency trees at dependency-trees.txt)
 - your sensibilities (using-graph-sdk is the most obscure, but supports big (4MB) files 
 
-Whichever you choose, look at the graph-convert-sample module; specify your chosen module in the pom there.  
+Whichever you choose, you can look at the graph-convert-sample module; just specify your chosen module in the pom there.  
 (Copy the pom and Java source code from this module into your IDE as a new project) 
 
 Before you start, you'll need to set some stuff up in Microsoft's cloud.  I followed https://medium.com/medialesson/convert-files-to-pdf-using-microsoft-graph-azure-functions-20bc84d2adc4 but the following may also help:
