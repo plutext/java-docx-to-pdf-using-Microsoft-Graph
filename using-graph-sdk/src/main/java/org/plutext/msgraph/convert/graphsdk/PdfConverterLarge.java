@@ -192,7 +192,7 @@ public class PdfConverterLarge  extends AbstractOpenXmlToPDF {
 //			requestOptions.add(format);
 			
 			try (
-					BufferedInputStream inputStream = (BufferedInputStream)graphClient.customRequest(convertPathPrefix + item+ "/content?format=pdf", Stream.class)
+					BufferedInputStream inputStream = (BufferedInputStream)graphClient.customRequest(convertPathPrefix + item+ "/content?format=pdf", InputStream.class)
 					.buildRequest()
 					.get();
 					
