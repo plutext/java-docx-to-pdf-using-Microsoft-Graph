@@ -7,7 +7,7 @@
   <parent>
 	<groupId>org.plutext.graph-convert</groupId>
 	<artifactId>office-to-pdf-using-Microsoft-Graph</artifactId>	
-	<version>${revision}</version>
+	<version>1.0.3-patched</version>
   </parent>
   
 	<artifactId>graph-convert-sample</artifactId>

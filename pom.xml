@@ -10,10 +10,10 @@
 
 	<groupId>org.plutext.graph-convert</groupId>
 	<artifactId>office-to-pdf-using-Microsoft-Graph</artifactId>	
-	<version>${revision}</version>
+	<version>1.0.3-patched</version>
 	
 	<properties>
-		<revision>1.0.4-SNAPSHOT</revision>
+		<revision>1.0.3-patched</revision>
 		<packaging.type>jar</packaging.type>
 	    <!-- <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
 	    <!-- github server corresponds to entry in ~/.m2/settings.xml -->
@@ -55,7 +55,15 @@
 			<organizationUrl>http://www.plutext.com</organizationUrl>
 		</developer>
 	</developers>
-  	
+
+	<distributionManagement>
+		<repository>
+			<id>nexus-cgoit-maven</id>
+			<name>cgoit-maven</name>
+			<url>https://nexus.cgo-it.de/repository/maven-releases</url>
+		</repository>
+	</distributionManagement>
+
 	<scm>
 	    <developerConnection>scm:git|git@github.com:plutext/java-docx-to-pdf-using-Microsoft-Graph.git</developerConnection>
       <tag>HEAD</tag>
