@@ -3,6 +3,7 @@ bin/
 target/
 /dist/
 bin-testOutput/
+sample-docs/
 .directory
 .idea
 .project
